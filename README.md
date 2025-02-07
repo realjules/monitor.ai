@@ -1,4 +1,4 @@
-I'll explain how all repositories are related, provide a system startup guide, and create a high-level architecture diagram.
+Below are a relationship between all folders.
 
 1. Repository Relationships:
 
