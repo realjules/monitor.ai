@@ -1,0 +1,50 @@
+
+CLINICAL NOTE
+============
+Patient ID: P0117
+Date: 2024-10-23
+
+PATIENT INFORMATION
+------------------
+Age: 39
+Gender: Female
+Admission Date: 2024-10-23
+
+VITAL SIGNS
+----------
+Temperature: 37.8°C
+Heart Rate: 92 bpm
+Respiratory Rate: 27 /min
+Blood Pressure: 120/90 mmHg
+O2 Saturation: 91%
+
+PRESENTING SYMPTOMS
+-----------------
+- dyspnea
+- sputum production
+- wheezing
+- malaise
+- chills
+- fatigue
+- fever
+
+MEDICAL HISTORY
+-------------
+Comorbidities: Chronic Kidney Disease
+
+MEDICATIONS
+----------
+- Azithromycin 500mg once daily
+- Acetaminophen 650mg every 6 hours as needed
+
+ASSESSMENT
+---------
+Patient presents with clinical and radiological findings consistent with pneumonia.
+
+PLAN
+----
+1. Continue current antibiotic regimen
+2. Monitor vital signs and oxygen saturation
+3. Encourage deep breathing exercises
+4. Follow-up chest X-ray in 2 weeks
+5. Return if symptoms worsen

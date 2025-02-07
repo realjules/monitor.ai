@@ -1,0 +1,50 @@
+
+CLINICAL NOTE
+============
+Patient ID: P0188
+Date: 2024-10-13
+
+PATIENT INFORMATION
+------------------
+Age: 24
+Gender: Female
+Admission Date: 2024-10-13
+
+VITAL SIGNS
+----------
+Temperature: 39.3°C
+Heart Rate: 93 bpm
+Respiratory Rate: 20 /min
+Blood Pressure: 111/66 mmHg
+O2 Saturation: 92%
+
+PRESENTING SYMPTOMS
+-----------------
+- tachypnea
+- dyspnea
+- sputum production
+- fever
+- fatigue
+- decreased appetite
+
+MEDICAL HISTORY
+-------------
+Comorbidities: Coronary Artery Disease
+
+MEDICATIONS
+----------
+- Azithromycin 500mg once daily
+- Acetaminophen 650mg every 6 hours as needed
+- Ibuprofen 400mg every 6 hours as needed
+
+ASSESSMENT
+---------
+Patient presents with clinical and radiological findings consistent with pneumonia.
+
+PLAN
+----
+1. Continue current antibiotic regimen
+2. Monitor vital signs and oxygen saturation
+3. Encourage deep breathing exercises
+4. Follow-up chest X-ray in 2 weeks
+5. Return if symptoms worsen

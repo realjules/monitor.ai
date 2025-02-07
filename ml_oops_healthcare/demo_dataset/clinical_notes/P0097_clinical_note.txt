@@ -1,0 +1,54 @@
+
+CLINICAL NOTE
+============
+Patient ID: P0097
+Date: 2024-10-26
+
+PATIENT INFORMATION
+------------------
+Age: 58
+Gender: Female
+Admission Date: 2024-10-26
+
+VITAL SIGNS
+----------
+Temperature: 39.0°C
+Heart Rate: 116 bpm
+Respiratory Rate: 27 /min
+Blood Pressure: 129/61 mmHg
+O2 Saturation: 89%
+
+PRESENTING SYMPTOMS
+-----------------
+- chest pain
+- wheezing
+- tachypnea
+- shallow breathing
+- dyspnea
+- muscle aches
+- fatigue
+- chills
+- fever
+
+MEDICAL HISTORY
+-------------
+Comorbidities: Asthma
+
+MEDICATIONS
+----------
+- Levofloxacin 750mg once daily
+- Amoxicillin 500mg three times daily
+- Guaifenesin 400mg every 4 hours as needed
+- Ibuprofen 400mg every 6 hours as needed
+
+ASSESSMENT
+---------
+Patient presents with clinical and radiological findings consistent with pneumonia.
+
+PLAN
+----
+1. Continue current antibiotic regimen
+2. Monitor vital signs and oxygen saturation
+3. Encourage deep breathing exercises
+4. Follow-up chest X-ray in 2 weeks
+5. Return if symptoms worsen

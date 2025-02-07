@@ -1,0 +1,51 @@
+
+CLINICAL NOTE
+============
+Patient ID: P0110
+Date: 2024-10-18
+
+PATIENT INFORMATION
+------------------
+Age: 81
+Gender: Male
+Admission Date: 2024-10-18
+
+VITAL SIGNS
+----------
+Temperature: 37.5°C
+Heart Rate: 113 bpm
+Respiratory Rate: 25 /min
+Blood Pressure: 122/88 mmHg
+O2 Saturation: 91%
+
+PRESENTING SYMPTOMS
+-----------------
+- sputum production
+- shallow breathing
+- tachypnea
+- sweating
+- decreased appetite
+- chills
+- fatigue
+
+MEDICAL HISTORY
+-------------
+Comorbidities: Hypertension, Chronic Kidney Disease
+
+MEDICATIONS
+----------
+- Levofloxacin 750mg once daily
+- Azithromycin 500mg once daily
+- Guaifenesin 400mg every 4 hours as needed
+
+ASSESSMENT
+---------
+Patient presents with clinical and radiological findings consistent with pneumonia.
+
+PLAN
+----
+1. Continue current antibiotic regimen
+2. Monitor vital signs and oxygen saturation
+3. Encourage deep breathing exercises
+4. Follow-up chest X-ray in 2 weeks
+5. Return if symptoms worsen

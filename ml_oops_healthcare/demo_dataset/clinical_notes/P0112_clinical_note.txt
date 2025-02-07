@@ -1,0 +1,49 @@
+
+CLINICAL NOTE
+============
+Patient ID: P0112
+Date: 2024-10-15
+
+PATIENT INFORMATION
+------------------
+Age: 61
+Gender: Female
+Admission Date: 2024-10-15
+
+VITAL SIGNS
+----------
+Temperature: 38.4°C
+Heart Rate: 106 bpm
+Respiratory Rate: 22 /min
+Blood Pressure: 130/90 mmHg
+O2 Saturation: 93%
+
+PRESENTING SYMPTOMS
+-----------------
+- tachypnea
+- cough
+- wheezing
+- muscle aches
+- sweating
+
+MEDICAL HISTORY
+-------------
+Comorbidities: Hypertension
+
+MEDICATIONS
+----------
+- Azithromycin 500mg once daily
+- Guaifenesin 400mg every 4 hours as needed
+- Acetaminophen 650mg every 6 hours as needed
+
+ASSESSMENT
+---------
+Patient presents with clinical and radiological findings consistent with pneumonia.
+
+PLAN
+----
+1. Continue current antibiotic regimen
+2. Monitor vital signs and oxygen saturation
+3. Encourage deep breathing exercises
+4. Follow-up chest X-ray in 2 weeks
+5. Return if symptoms worsen

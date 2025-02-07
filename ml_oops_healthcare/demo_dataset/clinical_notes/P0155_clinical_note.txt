@@ -1,0 +1,50 @@
+
+CLINICAL NOTE
+============
+Patient ID: P0155
+Date: 2024-10-14
+
+PATIENT INFORMATION
+------------------
+Age: 23
+Gender: Male
+Admission Date: 2024-10-14
+
+VITAL SIGNS
+----------
+Temperature: 37.9°C
+Heart Rate: 110 bpm
+Respiratory Rate: 26 /min
+Blood Pressure: 134/60 mmHg
+O2 Saturation: 88%
+
+PRESENTING SYMPTOMS
+-----------------
+- sputum production
+- tachypnea
+- shallow breathing
+- chest pain
+- malaise
+- fatigue
+
+MEDICAL HISTORY
+-------------
+Comorbidities: Hypertension, Asthma, COPD
+
+MEDICATIONS
+----------
+- Doxycycline 100mg twice daily
+- Ceftriaxone 1g daily
+- Ibuprofen 400mg every 6 hours as needed
+
+ASSESSMENT
+---------
+Patient presents with clinical and radiological findings consistent with pneumonia.
+
+PLAN
+----
+1. Continue current antibiotic regimen
+2. Monitor vital signs and oxygen saturation
+3. Encourage deep breathing exercises
+4. Follow-up chest X-ray in 2 weeks
+5. Return if symptoms worsen

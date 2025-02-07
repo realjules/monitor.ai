@@ -1,0 +1,52 @@
+
+CLINICAL NOTE
+============
+Patient ID: P0140
+Date: 2024-10-18
+
+PATIENT INFORMATION
+------------------
+Age: 35
+Gender: Female
+Admission Date: 2024-10-18
+
+VITAL SIGNS
+----------
+Temperature: 38.4°C
+Heart Rate: 109 bpm
+Respiratory Rate: 24 /min
+Blood Pressure: 133/69 mmHg
+O2 Saturation: 93%
+
+PRESENTING SYMPTOMS
+-----------------
+- dyspnea
+- chest pain
+- shallow breathing
+- wheezing
+- cough
+- decreased appetite
+- muscle aches
+- malaise
+
+MEDICAL HISTORY
+-------------
+Comorbidities: Coronary Artery Disease, Chronic Kidney Disease
+
+MEDICATIONS
+----------
+- Ceftriaxone 1g daily
+- Acetaminophen 650mg every 6 hours as needed
+- Ibuprofen 400mg every 6 hours as needed
+
+ASSESSMENT
+---------
+Patient presents with clinical and radiological findings consistent with pneumonia.
+
+PLAN
+----
+1. Continue current antibiotic regimen
+2. Monitor vital signs and oxygen saturation
+3. Encourage deep breathing exercises
+4. Follow-up chest X-ray in 2 weeks
+5. Return if symptoms worsen

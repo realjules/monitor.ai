@@ -1,0 +1,87 @@
+styles.css
+.sidebar {
+    background-color: #f8f9fa;
+    border-right: 1px solid #dee2e6;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.history-section {
+    margin-bottom: 20px;
+}
+
+.analysis-section {
+    border-top: 1px solid #dee2e6;
+    padding-top: 20px;
+}
+
+.top-bar {
+    background-color: white;
+    padding: 10px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.viewer-section {
+    height: 60vh;
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.chat-section {
+    height: 30vh;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 10px;
+}
+
+.history-item {
+    padding: 10px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.analysis-container {
+    padding: 15px;
+    background-color: white;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.metric-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+}
+
+.image-viewer-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.controls {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    display: flex;
+    gap: 10px;
+}
+
+.controls button {
+    padding: 5px 10px;
+    background-color: rgba(255,255,255,0.9);
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.measurements {
+    margin-top: 15px;
+    padding: 10px;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+}

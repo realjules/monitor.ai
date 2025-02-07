@@ -1,0 +1,50 @@
+
+CLINICAL NOTE
+============
+Patient ID: P0162
+Date: 2024-10-26
+
+PATIENT INFORMATION
+------------------
+Age: 40
+Gender: Male
+Admission Date: 2024-10-26
+
+VITAL SIGNS
+----------
+Temperature: 38.7°C
+Heart Rate: 119 bpm
+Respiratory Rate: 29 /min
+Blood Pressure: 117/70 mmHg
+O2 Saturation: 91%
+
+PRESENTING SYMPTOMS
+-----------------
+- wheezing
+- tachypnea
+- cough
+- chest pain
+- decreased appetite
+- fatigue
+- fever
+
+MEDICAL HISTORY
+-------------
+Comorbidities: COPD
+
+MEDICATIONS
+----------
+- Doxycycline 100mg twice daily
+- Ibuprofen 400mg every 6 hours as needed
+
+ASSESSMENT
+---------
+Patient presents with clinical and radiological findings consistent with pneumonia.
+
+PLAN
+----
+1. Continue current antibiotic regimen
+2. Monitor vital signs and oxygen saturation
+3. Encourage deep breathing exercises
+4. Follow-up chest X-ray in 2 weeks
+5. Return if symptoms worsen

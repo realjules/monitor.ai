@@ -1,0 +1,11 @@
+prompts
+api_docs
+python-dotenv
+langchain
+langchain-core
+chainlit
+dash
+langchain_community
+wikipedia
+faiss-cpu
+chromadb

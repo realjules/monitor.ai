@@ -1,0 +1,49 @@
+
+CLINICAL NOTE
+============
+Patient ID: P0084
+Date: 2024-10-20
+
+PATIENT INFORMATION
+------------------
+Age: 40
+Gender: Male
+Admission Date: 2024-10-20
+
+VITAL SIGNS
+----------
+Temperature: 39.3°C
+Heart Rate: 118 bpm
+Respiratory Rate: 26 /min
+Blood Pressure: 128/80 mmHg
+O2 Saturation: 93%
+
+PRESENTING SYMPTOMS
+-----------------
+- sputum production
+- dyspnea
+- wheezing
+- fatigue
+- sweating
+
+MEDICAL HISTORY
+-------------
+Comorbidities: COPD
+
+MEDICATIONS
+----------
+- Azithromycin 500mg once daily
+- Ibuprofen 400mg every 6 hours as needed
+- Guaifenesin 400mg every 4 hours as needed
+
+ASSESSMENT
+---------
+Patient presents with clinical and radiological findings consistent with pneumonia.
+
+PLAN
+----
+1. Continue current antibiotic regimen
+2. Monitor vital signs and oxygen saturation
+3. Encourage deep breathing exercises
+4. Follow-up chest X-ray in 2 weeks
+5. Return if symptoms worsen

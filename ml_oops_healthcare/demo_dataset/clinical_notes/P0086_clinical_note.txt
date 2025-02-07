@@ -1,0 +1,50 @@
+
+CLINICAL NOTE
+============
+Patient ID: P0086
+Date: 2024-10-24
+
+PATIENT INFORMATION
+------------------
+Age: 25
+Gender: Female
+Admission Date: 2024-10-24
+
+VITAL SIGNS
+----------
+Temperature: 37.7°C
+Heart Rate: 120 bpm
+Respiratory Rate: 24 /min
+Blood Pressure: 137/75 mmHg
+O2 Saturation: 89%
+
+PRESENTING SYMPTOMS
+-----------------
+- wheezing
+- shallow breathing
+- dyspnea
+- fatigue
+- muscle aches
+- chills
+- sweating
+
+MEDICAL HISTORY
+-------------
+Comorbidities: Asthma, Diabetes Type 2
+
+MEDICATIONS
+----------
+- Azithromycin 500mg once daily
+- Ibuprofen 400mg every 6 hours as needed
+
+ASSESSMENT
+---------
+Patient presents with clinical and radiological findings consistent with pneumonia.
+
+PLAN
+----
+1. Continue current antibiotic regimen
+2. Monitor vital signs and oxygen saturation
+3. Encourage deep breathing exercises
+4. Follow-up chest X-ray in 2 weeks
+5. Return if symptoms worsen

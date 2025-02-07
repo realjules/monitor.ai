@@ -1,0 +1,50 @@
+
+CLINICAL NOTE
+============
+Patient ID: P0119
+Date: 2024-10-23
+
+PATIENT INFORMATION
+------------------
+Age: 20
+Gender: Female
+Admission Date: 2024-10-23
+
+VITAL SIGNS
+----------
+Temperature: 37.9°C
+Heart Rate: 86 bpm
+Respiratory Rate: 29 /min
+Blood Pressure: 116/63 mmHg
+O2 Saturation: 93%
+
+PRESENTING SYMPTOMS
+-----------------
+- sputum production
+- shallow breathing
+- cough
+- sweating
+- decreased appetite
+- fatigue
+
+MEDICAL HISTORY
+-------------
+Comorbidities: Coronary Artery Disease, Diabetes Type 2, Obesity
+
+MEDICATIONS
+----------
+- Doxycycline 100mg twice daily
+- Levofloxacin 750mg once daily
+- Guaifenesin 400mg every 4 hours as needed
+
+ASSESSMENT
+---------
+Patient presents with clinical and radiological findings consistent with pneumonia.
+
+PLAN
+----
+1. Continue current antibiotic regimen
+2. Monitor vital signs and oxygen saturation
+3. Encourage deep breathing exercises
+4. Follow-up chest X-ray in 2 weeks
+5. Return if symptoms worsen

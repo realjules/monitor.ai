@@ -1,0 +1,53 @@
+
+CLINICAL NOTE
+============
+Patient ID: P0176
+Date: 2024-10-14
+
+PATIENT INFORMATION
+------------------
+Age: 75
+Gender: Male
+Admission Date: 2024-10-14
+
+VITAL SIGNS
+----------
+Temperature: 38.2°C
+Heart Rate: 98 bpm
+Respiratory Rate: 30 /min
+Blood Pressure: 117/66 mmHg
+O2 Saturation: 95%
+
+PRESENTING SYMPTOMS
+-----------------
+- chest pain
+- cough
+- sputum production
+- wheezing
+- sweating
+- decreased appetite
+- fever
+- fatigue
+
+MEDICAL HISTORY
+-------------
+Comorbidities: Obesity, Chronic Kidney Disease, Diabetes Type 2
+
+MEDICATIONS
+----------
+- Doxycycline 100mg twice daily
+- Azithromycin 500mg once daily
+- Acetaminophen 650mg every 6 hours as needed
+- Ibuprofen 400mg every 6 hours as needed
+
+ASSESSMENT
+---------
+Patient presents with clinical and radiological findings consistent with pneumonia.
+
+PLAN
+----
+1. Continue current antibiotic regimen
+2. Monitor vital signs and oxygen saturation
+3. Encourage deep breathing exercises
+4. Follow-up chest X-ray in 2 weeks
+5. Return if symptoms worsen

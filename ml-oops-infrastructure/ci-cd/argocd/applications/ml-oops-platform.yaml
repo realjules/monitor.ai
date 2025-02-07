@@ -1,0 +1,48 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: ml-oops-platform
+  namespace: argocd
+spec:
+  generators:
+  - list:
+      elements:
+      - name: model-registry
+        repo: https://github.com/realjules/ml-oops-model-registry.git
+        path: infrastructure/kubernetes
+        namespace: ml-oops
+      - name: data-pipeline
+        repo: https://github.com/realjules/ml-oops-data-pipeline.git
+        path: infrastructure/kubernetes
+        namespace: ml-oops
+      - name: compliance
+        repo: https://github.com/realjules/ml-oops-compliance.git
+        path: infrastructure/kubernetes
+        namespace: ml-oops
+  template:
+    metadata:
+      name: '{{name}}'
+      namespace: argocd
+      finalizers:
+      - resources-finalizer.argocd.argoproj.io
+    spec:
+      project: ml-oops
+      source:
+        repoURL: '{{repo}}'
+        targetRevision: HEAD
+        path: '{{path}}'
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: '{{namespace}}'
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        syncOptions:
+        - CreateNamespace=true
+      retry:
+        limit: 5
+        backoff:
+          duration: 5s
+          factor: 2
+          maxDuration: 3m

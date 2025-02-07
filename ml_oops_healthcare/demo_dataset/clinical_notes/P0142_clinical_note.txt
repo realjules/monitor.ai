@@ -1,0 +1,53 @@
+
+CLINICAL NOTE
+============
+Patient ID: P0142
+Date: 2024-10-16
+
+PATIENT INFORMATION
+------------------
+Age: 32
+Gender: Female
+Admission Date: 2024-10-16
+
+VITAL SIGNS
+----------
+Temperature: 38.8°C
+Heart Rate: 96 bpm
+Respiratory Rate: 23 /min
+Blood Pressure: 118/86 mmHg
+O2 Saturation: 94%
+
+PRESENTING SYMPTOMS
+-----------------
+- cough
+- sputum production
+- dyspnea
+- chest pain
+- malaise
+- fatigue
+- decreased appetite
+- muscle aches
+
+MEDICAL HISTORY
+-------------
+Comorbidities: Diabetes Type 2
+
+MEDICATIONS
+----------
+- Ceftriaxone 1g daily
+- Levofloxacin 750mg once daily
+- Guaifenesin 400mg every 4 hours as needed
+- Ibuprofen 400mg every 6 hours as needed
+
+ASSESSMENT
+---------
+Patient presents with clinical and radiological findings consistent with pneumonia.
+
+PLAN
+----
+1. Continue current antibiotic regimen
+2. Monitor vital signs and oxygen saturation
+3. Encourage deep breathing exercises
+4. Follow-up chest X-ray in 2 weeks
+5. Return if symptoms worsen

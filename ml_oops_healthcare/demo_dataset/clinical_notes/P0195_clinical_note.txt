@@ -1,0 +1,51 @@
+
+CLINICAL NOTE
+============
+Patient ID: P0195
+Date: 2024-10-24
+
+PATIENT INFORMATION
+------------------
+Age: 75
+Gender: Female
+Admission Date: 2024-10-24
+
+VITAL SIGNS
+----------
+Temperature: 39.3°C
+Heart Rate: 83 bpm
+Respiratory Rate: 25 /min
+Blood Pressure: 113/85 mmHg
+O2 Saturation: 90%
+
+PRESENTING SYMPTOMS
+-----------------
+- sputum production
+- wheezing
+- shallow breathing
+- sweating
+- decreased appetite
+- fever
+- chills
+
+MEDICAL HISTORY
+-------------
+Comorbidities: Obesity
+
+MEDICATIONS
+----------
+- Doxycycline 100mg twice daily
+- Amoxicillin 500mg three times daily
+- Guaifenesin 400mg every 4 hours as needed
+
+ASSESSMENT
+---------
+Patient presents with clinical and radiological findings consistent with pneumonia.
+
+PLAN
+----
+1. Continue current antibiotic regimen
+2. Monitor vital signs and oxygen saturation
+3. Encourage deep breathing exercises
+4. Follow-up chest X-ray in 2 weeks
+5. Return if symptoms worsen

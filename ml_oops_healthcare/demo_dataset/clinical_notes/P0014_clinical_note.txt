@@ -1,0 +1,43 @@
+
+CLINICAL NOTE
+============
+Patient ID: P0014
+Date: 2024-10-17
+
+PATIENT INFORMATION
+------------------
+Age: 78
+Gender: Female
+Admission Date: 2024-10-17
+
+VITAL SIGNS
+----------
+Temperature: 39.2°C
+Heart Rate: 111 bpm
+Respiratory Rate: 28 /min
+Blood Pressure: 116/86 mmHg
+O2 Saturation: 93%
+
+PRESENTING SYMPTOMS
+-----------------
+- cough
+- fever
+- decreased appetite
+
+MEDICAL HISTORY
+-------------
+Comorbidities: None
+
+MEDICATIONS
+----------
+- Ibuprofen 400mg every 6 hours as needed
+
+ASSESSMENT
+---------
+Chest X-ray shows no active pulmonary disease.
+
+PLAN
+----
+1. Symptomatic treatment as needed
+2. Return if symptoms worsen
+3. Regular health maintenance

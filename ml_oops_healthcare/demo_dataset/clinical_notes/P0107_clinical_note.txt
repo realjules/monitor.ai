@@ -1,0 +1,51 @@
+
+CLINICAL NOTE
+============
+Patient ID: P0107
+Date: 2024-10-24
+
+PATIENT INFORMATION
+------------------
+Age: 61
+Gender: Male
+Admission Date: 2024-10-24
+
+VITAL SIGNS
+----------
+Temperature: 37.9°C
+Heart Rate: 118 bpm
+Respiratory Rate: 21 /min
+Blood Pressure: 119/68 mmHg
+O2 Saturation: 90%
+
+PRESENTING SYMPTOMS
+-----------------
+- sputum production
+- cough
+- tachypnea
+- shallow breathing
+- sweating
+- fever
+- chills
+- muscle aches
+
+MEDICAL HISTORY
+-------------
+Comorbidities: Coronary Artery Disease, Diabetes Type 2
+
+MEDICATIONS
+----------
+- Doxycycline 100mg twice daily
+- Ibuprofen 400mg every 6 hours as needed
+
+ASSESSMENT
+---------
+Patient presents with clinical and radiological findings consistent with pneumonia.
+
+PLAN
+----
+1. Continue current antibiotic regimen
+2. Monitor vital signs and oxygen saturation
+3. Encourage deep breathing exercises
+4. Follow-up chest X-ray in 2 weeks
+5. Return if symptoms worsen

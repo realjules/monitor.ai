@@ -1,0 +1,45 @@
+
+CLINICAL NOTE
+============
+Patient ID: P0012
+Date: 2024-10-16
+
+PATIENT INFORMATION
+------------------
+Age: 40
+Gender: Female
+Admission Date: 2024-10-16
+
+VITAL SIGNS
+----------
+Temperature: 38.2°C
+Heart Rate: 119 bpm
+Respiratory Rate: 28 /min
+Blood Pressure: 116/75 mmHg
+O2 Saturation: 88%
+
+PRESENTING SYMPTOMS
+-----------------
+- sputum production
+- chest pain
+- shallow breathing
+- chills
+
+MEDICAL HISTORY
+-------------
+Comorbidities: Hypertension, Coronary Artery Disease
+
+MEDICATIONS
+----------
+- Ibuprofen 400mg every 6 hours as needed
+- Guaifenesin 400mg every 4 hours as needed
+
+ASSESSMENT
+---------
+Chest X-ray shows no active pulmonary disease.
+
+PLAN
+----
+1. Symptomatic treatment as needed
+2. Return if symptoms worsen
+3. Regular health maintenance

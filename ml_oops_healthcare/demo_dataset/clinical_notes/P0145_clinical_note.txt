@@ -1,0 +1,51 @@
+
+CLINICAL NOTE
+============
+Patient ID: P0145
+Date: 2024-10-20
+
+PATIENT INFORMATION
+------------------
+Age: 38
+Gender: Male
+Admission Date: 2024-10-20
+
+VITAL SIGNS
+----------
+Temperature: 37.8°C
+Heart Rate: 113 bpm
+Respiratory Rate: 26 /min
+Blood Pressure: 122/76 mmHg
+O2 Saturation: 91%
+
+PRESENTING SYMPTOMS
+-----------------
+- sputum production
+- wheezing
+- shallow breathing
+- sweating
+- malaise
+- muscle aches
+
+MEDICAL HISTORY
+-------------
+Comorbidities: Coronary Artery Disease, Asthma, COPD
+
+MEDICATIONS
+----------
+- Doxycycline 100mg twice daily
+- Azithromycin 500mg once daily
+- Acetaminophen 650mg every 6 hours as needed
+- Guaifenesin 400mg every 4 hours as needed
+
+ASSESSMENT
+---------
+Patient presents with clinical and radiological findings consistent with pneumonia.
+
+PLAN
+----
+1. Continue current antibiotic regimen
+2. Monitor vital signs and oxygen saturation
+3. Encourage deep breathing exercises
+4. Follow-up chest X-ray in 2 weeks
+5. Return if symptoms worsen

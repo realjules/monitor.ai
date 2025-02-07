@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: security-scan-config
+  namespace: security
+data:
+  trivy-config.yaml: |
+    severity:
+      - CRITICAL
+      - HIGH
+    scan:
+      scanners:
+        - vuln
+        - config
+        - secret
+    vulnerability:
+      type:
+        - os
+        - library
+      ignore-unfixed: true
+    misconfiguration:
+      policy:
+        - kubernetes
+        - dockerfile
+
+  sonarqube-config.yaml: |
+    sonar.projectKey=ml-oops
+    sonar.sources=.
+    sonar.exclusions=**/*test*/**
+    sonar.coverage.exclusions=**/*test*/**
+    sonar.python.coverage.reportPaths=coverage.xml
+    sonar.python.version=3.9
+
+  falco-rules.yaml: |
+    - rule: Unauthorized Access Attempt
+      desc: Detect unauthorized access attempts to sensitive resources
+      condition: >
+        (ka.user.name != "system:serviceaccount:ml-oops:default" and
+         ka.target.resource = "secrets" and
+         ka.target.namespace = "ml-oops")
+      output: Unauthorized access attempt (user=%ka.user.name resource=%ka.target.resource)
+      priority: WARNING
+      tags: [security, audit]
+
+    - rule: Privileged Container
+      desc: Detect privileged container execution
+      condition: container.privileged = true
+      output: Privileged container started (container=%container.name)
+      priority: WARNING
+      tags: [security, containers]

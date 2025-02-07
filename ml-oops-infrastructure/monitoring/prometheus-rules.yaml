@@ -1,0 +1,80 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: ml-oops-alerts
+  namespace: monitoring
+spec:
+  groups:
+  - name: ml-oops.rules
+    rules:
+    # Model Performance Alerts
+    - alert: ModelAccuracyDrop
+      expr: |
+        ml_model_accuracy < 0.85
+      for: 1h
+      labels:
+        severity: warning
+        team: ml
+      annotations:
+        summary: Model accuracy below threshold
+        description: Model {{ $labels.model_name }} accuracy is below 85% for more than 1 hour
+
+    # Infrastructure Alerts
+    - alert: HighCPUUsage
+      expr: |
+        container_cpu_usage_seconds_total{namespace="ml-oops"} > 0.85
+      for: 15m
+      labels:
+        severity: warning
+        team: ops
+      annotations:
+        summary: High CPU usage detected
+        description: Container {{ $labels.container }} has high CPU usage
+
+    # Data Pipeline Alerts
+    - alert: DataPipelineFailure
+      expr: |
+        rate(data_pipeline_failures_total[5m]) > 0
+      for: 5m
+      labels:
+        severity: critical
+        team: data
+      annotations:
+        summary: Data pipeline failure detected
+        description: Pipeline {{ $labels.pipeline }} has failed
+
+    # Compliance Alerts
+    - alert: ComplianceCheckFailure
+      expr: |
+        compliance_check_status{status="failed"} > 0
+      for: 1m
+      labels:
+        severity: critical
+        team: compliance
+      annotations:
+        summary: Compliance check failure
+        description: Compliance check {{ $labels.check_name }} has failed
+
+    # Security Alerts
+    - alert: UnauthorizedAccess
+      expr: |
+        rate(unauthorized_access_attempts_total[5m]) > 10
+      for: 5m
+      labels:
+        severity: critical
+        team: security
+      annotations:
+        summary: High number of unauthorized access attempts
+        description: Detected multiple unauthorized access attempts
+
+    # System Health Alerts
+    - alert: PodCrashLooping
+      expr: |
+        rate(kube_pod_container_status_restarts_total{namespace="ml-oops"}[15m]) > 0
+      for: 15m
+      labels:
+        severity: warning
+        team: ops
+      annotations:
+        summary: Pod is crash looping
+        description: Pod {{ $labels.pod }} is restarting frequently

@@ -1,0 +1,169 @@
+name: End-to-End Deployment
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+        - dev
+        - staging
+        - prod
+
+env:
+  AWS_REGION: us-west-2
+
+jobs:
+  security-scan:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: 'fs'
+        ignore-unfixed: true
+        format: 'sarif'
+        output: 'trivy-results.sarif'
+        severity: 'CRITICAL,HIGH'
+
+    - name: Run Checkov
+      uses: bridgecrewio/checkov-action@master
+      with:
+        directory: terraform
+        framework: terraform
+        output_format: sarif
+        output_file: checkov-results.sarif
+
+    - name: Upload scan results
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+        sarif_file: trivy-results.sarif
+
+  infrastructure:
+    name: Deploy Infrastructure
+    needs: security-scan
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment || 'dev' }}
+    
+    steps:
+    - name: Checkout Infrastructure
+      uses: actions/checkout@v2
+      with:
+        repository: realjules/ml-oops-infrastructure
+        path: infrastructure
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+
+    - name: Terraform Apply
+      run: |
+        cd infrastructure/terraform/environments/${{ github.event.inputs.environment || 'dev' }}
+        terraform init
+        terraform apply -auto-approve
+
+  applications:
+    name: Deploy Applications
+    needs: infrastructure
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment || 'dev' }}
+    
+    strategy:
+      matrix:
+        app: [model-registry, data-pipeline, compliance]
+        
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        repository: realjules/ml-oops-${{ matrix.app }}
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Configure kubectl
+      run: |
+        aws eks update-kubeconfig --name ml-oops-cluster --region ${{ env.AWS_REGION }}
+
+    - name: Build and push Docker image
+      run: |
+        aws ecr get-login-password --region ${{ env.AWS_REGION }} | docker login --username AWS --password-stdin ${{ secrets.ECR_REGISTRY }}
+        docker build -t ${{ secrets.ECR_REGISTRY }}/${{ matrix.app }}:${{ github.sha }} .
+        docker push ${{ secrets.ECR_REGISTRY }}/${{ matrix.app }}:${{ github.sha }}
+
+    - name: Deploy to Kubernetes
+      run: |
+        cd infrastructure/kubernetes/overlays/${{ github.event.inputs.environment || 'dev' }}
+        kustomize edit set image ${{ matrix.app }}=${{ secrets.ECR_REGISTRY }}/${{ matrix.app }}:${{ github.sha }}
+        kubectl apply -k .
+
+  monitoring:
+    name: Deploy Monitoring
+    needs: applications
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment || 'dev' }}
+    
+    steps:
+    - name: Configure kubectl
+      run: |
+        aws eks update-kubeconfig --name ml-oops-cluster --region ${{ env.AWS_REGION }}
+
+    - name: Deploy Prometheus
+      run: |
+        helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+        helm repo update
+        helm upgrade --install prometheus prometheus-community/kube-prometheus-stack \
+          --namespace monitoring \
+          --create-namespace \
+          --values infrastructure/monitoring/prometheus-values.yaml
+
+    - name: Deploy Grafana
+      run: |
+        kubectl apply -f infrastructure/monitoring/grafana-dashboards/
+
+  validation:
+    name: Validate Deployment
+    needs: monitoring
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment || 'dev' }}
+    
+    steps:
+    - name: Run health checks
+      run: |
+        for service in model-registry data-pipeline compliance; do
+          kubectl rollout status deployment/$service -n ml-oops
+          curl -f http://$service.ml-oops.svc.cluster.local/health
+        done
+
+    - name: Verify monitoring
+      run: |
+        kubectl rollout status deployment/prometheus-operator -n monitoring
+        kubectl rollout status deployment/grafana -n monitoring
+
+    - name: Send notification
+      if: always()
+      uses: slackapi/slack-github-action@v1.24.0
+      with:
+        channel-id: ${{ secrets.SLACK_CHANNEL_ID }}
+        slack-message: "Deployment to ${{ github.event.inputs.environment || 'dev' }} ${{ job.status }}"
+      env:
+        SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}

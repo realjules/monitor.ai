@@ -1,0 +1,51 @@
+
+CLINICAL NOTE
+============
+Patient ID: P0089
+Date: 2024-10-21
+
+PATIENT INFORMATION
+------------------
+Age: 38
+Gender: Male
+Admission Date: 2024-10-21
+
+VITAL SIGNS
+----------
+Temperature: 37.5°C
+Heart Rate: 99 bpm
+Respiratory Rate: 28 /min
+Blood Pressure: 117/87 mmHg
+O2 Saturation: 88%
+
+PRESENTING SYMPTOMS
+-----------------
+- tachypnea
+- dyspnea
+- cough
+- sweating
+- chills
+- decreased appetite
+- malaise
+
+MEDICAL HISTORY
+-------------
+Comorbidities: COPD
+
+MEDICATIONS
+----------
+- Ceftriaxone 1g daily
+- Acetaminophen 650mg every 6 hours as needed
+- Ibuprofen 400mg every 6 hours as needed
+
+ASSESSMENT
+---------
+Patient presents with clinical and radiological findings consistent with pneumonia.
+
+PLAN
+----
+1. Continue current antibiotic regimen
+2. Monitor vital signs and oxygen saturation
+3. Encourage deep breathing exercises
+4. Follow-up chest X-ray in 2 weeks
+5. Return if symptoms worsen

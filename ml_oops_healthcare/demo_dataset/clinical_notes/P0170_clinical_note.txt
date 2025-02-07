@@ -1,0 +1,50 @@
+
+CLINICAL NOTE
+============
+Patient ID: P0170
+Date: 2024-10-13
+
+PATIENT INFORMATION
+------------------
+Age: 47
+Gender: Male
+Admission Date: 2024-10-13
+
+VITAL SIGNS
+----------
+Temperature: 38.6°C
+Heart Rate: 109 bpm
+Respiratory Rate: 22 /min
+Blood Pressure: 121/77 mmHg
+O2 Saturation: 90%
+
+PRESENTING SYMPTOMS
+-----------------
+- dyspnea
+- tachypnea
+- wheezing
+- malaise
+- fatigue
+- fever
+- sweating
+
+MEDICAL HISTORY
+-------------
+Comorbidities: Hypertension
+
+MEDICATIONS
+----------
+- Azithromycin 500mg once daily
+- Guaifenesin 400mg every 4 hours as needed
+
+ASSESSMENT
+---------
+Patient presents with clinical and radiological findings consistent with pneumonia.
+
+PLAN
+----
+1. Continue current antibiotic regimen
+2. Monitor vital signs and oxygen saturation
+3. Encourage deep breathing exercises
+4. Follow-up chest X-ray in 2 weeks
+5. Return if symptoms worsen
