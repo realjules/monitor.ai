@@ -33,7 +33,7 @@ ml_oops_healthcare/
 │   │   └── prometheus.yml # Prometheus config
 │   └── docker/            # Docker configurations
 │       ├── ml-api.Dockerfile
-│       └── docker-compose.yml
+│       └── docker-compose.yml 
 │
 ├── docs/                   # Documentation
 │   ├── architecture/      # Architecture docs
