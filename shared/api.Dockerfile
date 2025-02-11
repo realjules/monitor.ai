@@ -13,10 +13,7 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
-COPY audit /app/audit
-COPY policies /app/policies
-COPY reporting /app/reporting
-COPY validation /app/validation
+COPY core/healthcare /app/
 
 ENV PYTHONPATH=/app
 
