@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import os
+import datetime
 
 app = FastAPI(title="Compliance Service")
 
@@ -19,7 +20,21 @@ async def root():
 
 @app.get("/health")
 async def health_check():
-    return {"status": "healthy"}
+    """Health check endpoint for Docker"""
+    try:
+        # Add basic service checks
+        return {
+            "status": "healthy",
+            "service": "compliance",
+            "timestamp": datetime.datetime.now().isoformat()
+        }
+    except Exception as e:
+        return {
+            "status": "unhealthy",
+            "error": str(e),
+            "service": "compliance",
+            "timestamp": datetime.datetime.now().isoformat()
+        }, 500
 
 if __name__ == "__main__":
     import uvicorn
