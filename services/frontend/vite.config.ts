@@ -5,13 +5,21 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   server: {
-    host: '0.0.0.0',
-    port: 50711,
+    port: parseInt(process.env.VITE_PORT || '52209'),
+    host: process.env.VITE_HOST || '0.0.0.0',
+    strictPort: true,
+    cors: true,
     proxy: {
       '/api': {
-        target: 'http://localhost:57763',
+        target: process.env.VITE_API_URL || 'http://localhost:52209',
         changeOrigin: true,
-      },
-    },
+        secure: false,
+      }
+    }
   },
+  preview: {
+    port: parseInt(process.env.VITE_PORT || '52209'),
+    host: process.env.VITE_HOST || '0.0.0.0',
+    strictPort: true,
+  }
 })
