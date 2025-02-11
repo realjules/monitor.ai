@@ -17,7 +17,8 @@ services:
       - FLASK_ENV=development
       - FLASK_DEBUG=1
       - PYTHONUNBUFFERED=1
-    command: python -m uvicorn api.main:app --host 0.0.0.0 --port 52209 --reload --reload-dir /app
+      - PYTHONDONTWRITEBYTECODE=1
+    command: sh -c "sleep 5 && python -m uvicorn api.main:app --host 0.0.0.0 --port 52209 --reload --reload-dir /app"
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:52209/health || exit 1"]
       interval: 30s
@@ -46,7 +47,8 @@ services:
       - ALLOW_IFRAME=true
       - CORS_ORIGINS=*
       - PYTHONUNBUFFERED=1
-    command: python -m uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload --reload-dir /app
+      - PYTHONDONTWRITEBYTECODE=1
+    command: sh -c "sleep 5 && python -m uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload --reload-dir /app"
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
       interval: 30s
@@ -70,7 +72,8 @@ services:
       - ALLOW_IFRAME=true
       - CORS_ORIGINS=*
       - PYTHONUNBUFFERED=1
-    command: python -m uvicorn audit.main:app --host 0.0.0.0 --port 8001 --reload --reload-dir /app
+      - PYTHONDONTWRITEBYTECODE=1
+    command: sh -c "sleep 5 && python -m uvicorn audit.main:app --host 0.0.0.0 --port 8001 --reload --reload-dir /app"
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8001/health || exit 1"]
       interval: 30s
@@ -87,16 +90,15 @@ services:
       - node-modules:/app/node_modules
       - npm-cache:/root/.npm
     ports:
-      - "3000:3000"
+      - "52209:52209"
     environment:
-      - PORT=3000
+      - PORT=52209
       - HOST=0.0.0.0
       - NODE_ENV=development
       - VITE_API_URL=http://localhost:52209
       - CHOKIDAR_USEPOLLING=true
-      - VITE_PORT=52209
-      - VITE_HOST=0.0.0.0
-    command: npm run dev -- --port 52209 --host 0.0.0.0
+      - WATCHPACK_POLLING=true
+    command: sh -c "sleep 10 && npm run dev -- --port 52209 --host 0.0.0.0"
     depends_on:
       healthcare:
         condition: service_healthy
@@ -105,3 +107,9 @@ volumes:
   pip-cache:  # Persistent cache for pip packages
   node-modules:  # Persistent cache for node_modules
   npm-cache:  # Persistent cache for npm
+
+networks:
+  default:
+    driver: bridge
+    driver_opts:
+      com.docker.network.driver.mtu: 1400
