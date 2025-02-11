@@ -87,9 +87,9 @@ services:
       - node-modules:/app/node_modules
       - npm-cache:/root/.npm
     ports:
-      - "52209:52209"
+      - "3000:3000"
     environment:
-      - PORT=52209
+      - PORT=3000
       - HOST=0.0.0.0
       - NODE_ENV=development
       - VITE_API_URL=http://localhost:52209
