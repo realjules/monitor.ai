@@ -17,6 +17,7 @@ services:
       - FLASK_ENV=development
       - FLASK_DEBUG=1
       - PYTHONUNBUFFERED=1
+    command: python -m uvicorn api.main:app --host 0.0.0.0 --port 52209 --reload
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:52209/health"]
       interval: 10s
@@ -45,6 +46,7 @@ services:
       - ALLOW_IFRAME=true
       - CORS_ORIGINS=*
       - PYTHONUNBUFFERED=1
+    command: python -m uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 10s
@@ -68,6 +70,7 @@ services:
       - ALLOW_IFRAME=true
       - CORS_ORIGINS=*
       - PYTHONUNBUFFERED=1
+    command: python -m uvicorn audit.main:app --host 0.0.0.0 --port 8001 --reload
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
       interval: 10s
