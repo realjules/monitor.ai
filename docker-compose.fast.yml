@@ -1,11 +1,9 @@
-version: '3.8'
-
 services:
   healthcare:
     build:
       context: .
       dockerfile: shared/api.Dockerfile
-      target: builder  # Use only the builder stage for development
+      target: builder
     volumes:
       - ./core/healthcare:/app
       - pip-cache:/root/.cache/pip
@@ -19,9 +17,17 @@ services:
       - FLASK_ENV=development
       - FLASK_DEBUG=1
       - PYTHONUNBUFFERED=1
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:52209/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
     depends_on:
-      - model-registry
-      - compliance
+      model-registry:
+        condition: service_healthy
+      compliance:
+        condition: service_healthy
 
   model-registry:
     build:
@@ -39,6 +45,12 @@ services:
       - ALLOW_IFRAME=true
       - CORS_ORIGINS=*
       - PYTHONUNBUFFERED=1
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
 
   compliance:
     build:
@@ -56,12 +68,17 @@ services:
       - ALLOW_IFRAME=true
       - CORS_ORIGINS=*
       - PYTHONUNBUFFERED=1
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
 
   frontend:
     build:
       context: services/frontend
       dockerfile: Dockerfile
-      target: builder
     volumes:
       - ./services/frontend:/app
       - node-modules:/app/node_modules
@@ -72,11 +89,11 @@ services:
       - PORT=52209
       - HOST=0.0.0.0
       - NODE_ENV=development
+      - VITE_API_URL=http://localhost:52209
     command: npm run dev
     depends_on:
-      - healthcare
-      - model-registry
-      - compliance
+      healthcare:
+        condition: service_healthy
 
 volumes:
   pip-cache:  # Persistent cache for pip packages
