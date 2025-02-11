@@ -22,18 +22,21 @@ async def root():
 async def health_check():
     """Health check endpoint for Docker"""
     try:
-        # Add basic service checks
+        # Basic service checks
         return {
             "status": "healthy",
             "service": "compliance",
-            "timestamp": datetime.datetime.now().isoformat()
+            "timestamp": datetime.datetime.now().isoformat(),
+            "version": "1.0.0",
+            "port": int(os.getenv("PORT", 8001))
         }
     except Exception as e:
         return {
             "status": "unhealthy",
             "error": str(e),
             "service": "compliance",
-            "timestamp": datetime.datetime.now().isoformat()
+            "timestamp": datetime.datetime.now().isoformat(),
+            "port": int(os.getenv("PORT", 8001))
         }, 500
 
 if __name__ == "__main__":
