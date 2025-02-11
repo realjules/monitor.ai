@@ -19,11 +19,11 @@ services:
       - PYTHONUNBUFFERED=1
     command: python -m uvicorn api.main:app --host 0.0.0.0 --port 52209 --reload --reload-dir /app
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:52209/health"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 10s
+      test: ["CMD-SHELL", "curl -f http://localhost:52209/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
     depends_on:
       model-registry:
         condition: service_healthy
@@ -48,11 +48,11 @@ services:
       - PYTHONUNBUFFERED=1
     command: python -m uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload --reload-dir /app
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 10s
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
 
   compliance:
     build:
@@ -72,11 +72,11 @@ services:
       - PYTHONUNBUFFERED=1
     command: python -m uvicorn audit.main:app --host 0.0.0.0 --port 8001 --reload --reload-dir /app
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 10s
+      test: ["CMD-SHELL", "curl -f http://localhost:8001/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
 
   frontend:
     build:

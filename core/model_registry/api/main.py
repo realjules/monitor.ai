@@ -19,7 +19,12 @@ async def root():
 
 @app.get("/health")
 async def health_check():
-    return {"status": "healthy"}
+    """Health check endpoint for Docker"""
+    try:
+        # Add any additional health checks here
+        return {"status": "healthy"}
+    except Exception as e:
+        return {"status": "unhealthy", "error": str(e)}, 500
 
 if __name__ == "__main__":
     import uvicorn
