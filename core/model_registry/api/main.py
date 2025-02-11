@@ -23,20 +23,9 @@ async def health_check():
     """Health check endpoint for Docker"""
     try:
         # Basic service checks
-        return {
-            "status": "healthy",
-            "service": "model-registry",
-            "timestamp": datetime.datetime.now().isoformat(),
-            "version": "1.0.0",
-            "port": int(os.getenv("PORT", 8000))
-        }
+        return {"status": "healthy"}
     except Exception as e:
-        return {
-            "status": "unhealthy",
-            "error": str(e),
-            "service": "model-registry",
-            "timestamp": datetime.datetime.now().isoformat()
-        }, 500
+        return {"status": "unhealthy", "error": str(e)}, 500
 
 if __name__ == "__main__":
     import uvicorn
