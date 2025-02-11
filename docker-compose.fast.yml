@@ -17,12 +17,11 @@ services:
       - FLASK_ENV=development
       - FLASK_DEBUG=1
       - PYTHONUNBUFFERED=1
-      - PYTHONDONTWRITEBYTECODE=1
     command: >
       sh -c "sleep 10 &&
-             python -m uvicorn api.main:app --host 0.0.0.0 --port 52209 --reload --reload-dir /app"
+             python -m uvicorn api.main:app --host 0.0.0.0 --port 52209 --reload --reload-dir /app --log-level debug"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:52209/health || exit 1"]
+      test: ["CMD", "curl", "-v", "http://localhost:52209/health"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -49,12 +48,11 @@ services:
       - ALLOW_IFRAME=true
       - CORS_ORIGINS=*
       - PYTHONUNBUFFERED=1
-      - PYTHONDONTWRITEBYTECODE=1
     command: >
       sh -c "sleep 5 &&
-             python -m uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload --reload-dir /app"
+             python -m uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload --reload-dir /app --log-level debug"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health || exit 1"]
+      test: ["CMD", "curl", "-v", "http://localhost:8000/health"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -76,12 +74,11 @@ services:
       - ALLOW_IFRAME=true
       - CORS_ORIGINS=*
       - PYTHONUNBUFFERED=1
-      - PYTHONDONTWRITEBYTECODE=1
     command: >
       sh -c "sleep 5 &&
-             python -m uvicorn audit.main:app --host 0.0.0.0 --port 8001 --reload --reload-dir /app"
+             python -m uvicorn audit.main:app --host 0.0.0.0 --port 8001 --reload --reload-dir /app --log-level debug"
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8001/health || exit 1"]
+      test: ["CMD", "curl", "-v", "http://localhost:8001/health"]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -112,9 +109,9 @@ services:
         condition: service_healthy
 
 volumes:
-  pip-cache:  # Persistent cache for pip packages
-  node-modules:  # Persistent cache for node_modules
-  npm-cache:  # Persistent cache for npm
+  pip-cache:
+  node-modules:
+  npm-cache:
 
 networks:
   default:

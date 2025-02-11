@@ -22,22 +22,30 @@ async def root():
 async def health_check():
     """Health check endpoint for Docker"""
     try:
+        port = int(os.getenv("PORT", 8001))
+        print(f"Health check called on port {port}")  # Debug log
+        
         # Basic service checks
-        return {
+        response = {
             "status": "healthy",
             "service": "compliance",
             "timestamp": datetime.datetime.now().isoformat(),
             "version": "1.0.0",
-            "port": int(os.getenv("PORT", 8001))
+            "port": port,
+            "host": os.getenv("HOST", "0.0.0.0")
         }
+        print(f"Health check response: {response}")  # Debug log
+        return response
     except Exception as e:
-        return {
+        error_response = {
             "status": "unhealthy",
             "error": str(e),
             "service": "compliance",
             "timestamp": datetime.datetime.now().isoformat(),
             "port": int(os.getenv("PORT", 8001))
-        }, 500
+        }
+        print(f"Health check error: {error_response}")  # Debug log
+        return error_response, 500
 
 if __name__ == "__main__":
     import uvicorn
