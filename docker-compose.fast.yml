@@ -1,0 +1,84 @@
+version: '3.8'
+
+services:
+  healthcare:
+    build:
+      context: .
+      dockerfile: shared/api.Dockerfile
+      target: builder  # Use only the builder stage for development
+    volumes:
+      - ./core/healthcare:/app
+      - pip-cache:/root/.cache/pip
+    ports:
+      - "52209:52209"
+    environment:
+      - PORT=52209
+      - HOST=0.0.0.0
+      - ALLOW_IFRAME=true
+      - CORS_ORIGINS=*
+      - FLASK_ENV=development
+      - FLASK_DEBUG=1
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      - model-registry
+      - compliance
+
+  model-registry:
+    build:
+      context: .
+      dockerfile: shared/model_registry.Dockerfile
+      target: builder
+    volumes:
+      - ./core/model_registry:/app
+      - pip-cache:/root/.cache/pip
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - HOST=0.0.0.0
+      - ALLOW_IFRAME=true
+      - CORS_ORIGINS=*
+      - PYTHONUNBUFFERED=1
+
+  compliance:
+    build:
+      context: .
+      dockerfile: shared/api.Dockerfile
+      target: builder
+    volumes:
+      - ./core/compliance:/app
+      - pip-cache:/root/.cache/pip
+    ports:
+      - "8001:8001"
+    environment:
+      - PORT=8001
+      - HOST=0.0.0.0
+      - ALLOW_IFRAME=true
+      - CORS_ORIGINS=*
+      - PYTHONUNBUFFERED=1
+
+  frontend:
+    build:
+      context: services/frontend
+      dockerfile: Dockerfile
+      target: builder
+    volumes:
+      - ./services/frontend:/app
+      - node-modules:/app/node_modules
+      - npm-cache:/root/.npm
+    ports:
+      - "52209:52209"
+    environment:
+      - PORT=52209
+      - HOST=0.0.0.0
+      - NODE_ENV=development
+    command: npm run dev
+    depends_on:
+      - healthcare
+      - model-registry
+      - compliance
+
+volumes:
+  pip-cache:  # Persistent cache for pip packages
+  node-modules:  # Persistent cache for node_modules
+  npm-cache:  # Persistent cache for npm

@@ -6,8 +6,9 @@ WORKDIR /app
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies
-RUN npm ci
+# Install dependencies with caching
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci
 
 # Copy application code
 COPY . .
@@ -15,23 +16,23 @@ COPY . .
 # Build the application
 RUN npm run build
 
-# Runtime stage
+# Development stage
 FROM node:18-slim
 
 WORKDIR /app
 
-# Copy package files and install production dependencies
+# Copy package files and install dependencies with caching
 COPY package*.json ./
-RUN npm ci --only=production
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci
 
-# Copy built application from builder
-COPY --from=builder /app/dist ./dist
-COPY --from=builder /app/public ./public
+# Copy source code for development
+COPY . .
 
 # Set environment variables
-ENV PORT=52209
-ENV HOST=0.0.0.0
-ENV NODE_ENV=production
+ENV PORT=52209 \
+    HOST=0.0.0.0 \
+    NODE_ENV=development
 
-# Start the application
+# Start the development server
 CMD ["npm", "run", "dev"]
