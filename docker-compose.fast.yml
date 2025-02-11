@@ -18,13 +18,15 @@ services:
       - FLASK_DEBUG=1
       - PYTHONUNBUFFERED=1
       - PYTHONDONTWRITEBYTECODE=1
-    command: sh -c "sleep 5 && python -m uvicorn api.main:app --host 0.0.0.0 --port 52209 --reload --reload-dir /app"
+    command: >
+      sh -c "sleep 10 &&
+             python -m uvicorn api.main:app --host 0.0.0.0 --port 52209 --reload --reload-dir /app"
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:52209/health || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 30s
+      test: ["CMD", "curl", "-f", "http://localhost:52209/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 40s
     depends_on:
       model-registry:
         condition: service_healthy
@@ -48,12 +50,14 @@ services:
       - CORS_ORIGINS=*
       - PYTHONUNBUFFERED=1
       - PYTHONDONTWRITEBYTECODE=1
-    command: sh -c "sleep 5 && python -m uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload --reload-dir /app"
+    command: >
+      sh -c "sleep 5 &&
+             python -m uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload --reload-dir /app"
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
       start_period: 30s
 
   compliance:
@@ -73,12 +77,14 @@ services:
       - CORS_ORIGINS=*
       - PYTHONUNBUFFERED=1
       - PYTHONDONTWRITEBYTECODE=1
-    command: sh -c "sleep 5 && python -m uvicorn audit.main:app --host 0.0.0.0 --port 8001 --reload --reload-dir /app"
+    command: >
+      sh -c "sleep 5 &&
+             python -m uvicorn audit.main:app --host 0.0.0.0 --port 8001 --reload --reload-dir /app"
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8001/health || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
       start_period: 30s
 
   frontend:
@@ -98,7 +104,9 @@ services:
       - VITE_API_URL=http://localhost:52209
       - CHOKIDAR_USEPOLLING=true
       - WATCHPACK_POLLING=true
-    command: sh -c "sleep 10 && npm run dev -- --port 52209 --host 0.0.0.0"
+    command: >
+      sh -c "sleep 15 &&
+             npm run dev -- --port 52209 --host 0.0.0.0"
     depends_on:
       healthcare:
         condition: service_healthy
