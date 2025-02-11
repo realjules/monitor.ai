@@ -1,5 +1,5 @@
-# Build stage
-FROM node:18-slim AS builder
+# Development stage only
+FROM node:18-slim
 
 WORKDIR /app
 
@@ -8,31 +8,13 @@ COPY package*.json ./
 
 # Install dependencies with caching
 RUN --mount=type=cache,target=/root/.npm \
-    npm ci
-
-# Copy application code
-COPY . .
-
-# Build the application
-RUN npm run build
-
-# Development stage
-FROM node:18-slim
-
-WORKDIR /app
-
-# Copy package files and install dependencies with caching
-COPY package*.json ./
-RUN --mount=type=cache,target=/root/.npm \
-    npm ci
-
-# Copy source code for development
-COPY . .
+    npm install
 
 # Set environment variables
 ENV PORT=52209 \
     HOST=0.0.0.0 \
-    NODE_ENV=development
+    NODE_ENV=development \
+    VITE_API_URL=http://localhost:52209
 
-# Start the development server
+# Start the development server (code will be mounted as a volume)
 CMD ["npm", "run", "dev"]
