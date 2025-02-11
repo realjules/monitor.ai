@@ -1,0 +1,110 @@
+version: '3.8'
+
+services:
+  healthcare:
+    build:
+      context: .
+      dockerfile: shared/api.Dockerfile
+    volumes:
+      - ./core/healthcare:/app
+    ports:
+      - "52209:52209"
+    environment:
+      - PORT=52209
+      - HOST=0.0.0.0
+      - ALLOW_IFRAME=true
+      - CORS_ORIGINS=*
+      - FLASK_ENV=development
+      - FLASK_DEBUG=1
+    depends_on:
+      - model-registry
+      - compliance
+
+  model-registry:
+    build:
+      context: .
+      dockerfile: shared/model_registry.Dockerfile
+    volumes:
+      - ./core/model_registry:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - HOST=0.0.0.0
+      - ALLOW_IFRAME=true
+      - CORS_ORIGINS=*
+      - FLASK_ENV=development
+      - FLASK_DEBUG=1
+
+  data-pipeline:
+    image: apache/airflow:2.7.1
+    volumes:
+      - ./core/data_pipeline:/opt/airflow/dags
+    ports:
+      - "8080:8080"
+    environment:
+      - AIRFLOW__CORE__LOAD_EXAMPLES=false
+      - AIRFLOW__WEBSERVER__BASE_URL=http://localhost:8080
+      - AIRFLOW__WEBSERVER__EXPOSE_CONFIG=true
+      - AIRFLOW__WEBSERVER__RBAC=false
+      - AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION=false
+
+  compliance:
+    build:
+      context: .
+      dockerfile: shared/api.Dockerfile
+    volumes:
+      - ./core/compliance:/app
+    ports:
+      - "8001:8001"
+    environment:
+      - PORT=8001
+      - HOST=0.0.0.0
+      - ALLOW_IFRAME=true
+      - CORS_ORIGINS=*
+      - FLASK_ENV=development
+      - FLASK_DEBUG=1
+
+  prometheus:
+    image: prom/prometheus:v2.47.0
+    volumes:
+      - ./infrastructure/monitoring/prometheus-rules.yaml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+      - '--web.enable-lifecycle'
+
+  grafana:
+    image: grafana/grafana:10.1.5
+    volumes:
+      - ./infrastructure/monitoring/grafana-dashboards:/var/lib/grafana/dashboards
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+      - GF_AUTH_DISABLE_LOGIN_FORM=true
+    depends_on:
+      - prometheus
+
+  frontend:
+    build:
+      context: services/frontend
+    volumes:
+      - ./services/frontend:/app
+      - /app/node_modules
+    ports:
+      - "52209:52209"
+    environment:
+      - PORT=52209
+      - HOST=0.0.0.0
+      - NODE_ENV=development
+    command: npm run dev
+    depends_on:
+      - healthcare
+      - model-registry
+      - compliance
