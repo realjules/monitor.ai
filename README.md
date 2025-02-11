@@ -1,13 +1,38 @@
-Below are a relationship between all folders.
+# Monitor.AI - Healthcare ML Monitoring Platform
 
-1. Repository Relationships:
+A comprehensive platform for monitoring and managing healthcare ML models with focus on compliance, reliability, and performance.
+
+## Repository Structure
+
+```
+monitor.ai/
+├── core/                    # Core service implementations
+│   ├── healthcare/         # Healthcare ML service
+│   ├── model_registry/     # Model versioning and management
+│   ├── data_pipeline/      # Data processing and training pipelines
+│   └── compliance/         # Compliance monitoring and auditing
+├── services/               # Frontend and auxiliary services
+│   └── frontend/          # React-based web interface
+├── shared/                # Shared components and configurations
+│   ├── api.Dockerfile     # Base API Dockerfile
+│   └── model_registry.Dockerfile
+├── infrastructure/        # Infrastructure as Code
+│   ├── kubernetes/       # Kubernetes configurations
+│   ├── terraform/        # Infrastructure provisioning
+│   ├── monitoring/       # Monitoring stack (Prometheus/Grafana)
+│   └── ci-cd/           # CI/CD configurations
+└── tests/                # Test suites
+    └── healthcare/       # Healthcare service tests
+```
+
+## System Architecture
 
 ```mermaid
 graph TD
-    A[ml-oops-healthcare] --> B[ml-oops-model-registry]
-    A --> C[ml-oops-data-pipeline]
-    A --> D[ml-oops-compliance]
-    A --> E[ml-oops-infrastructure]
+    A[Healthcare Service] --> B[Model Registry]
+    A --> C[Data Pipeline]
+    A --> D[Compliance Service]
+    A --> E[Infrastructure]
     
     B -- "Model Versioning" --> C
     B -- "Model Validation" --> D
@@ -19,55 +44,53 @@ graph TD
     E -- "Deploys" --> D
 ```
 
-2. High-Level Architecture:
-3. System Startup Guide:
+## Quick Start
 
+1. **Clone the Repository**:
 ```bash
-# 1. Clone all repositories
-git clone https://github.com/realjules/ml-oops-healthcare.git
-git clone https://github.com/realjules/ml-oops-model-registry.git
-git clone https://github.com/realjules/ml-oops-data-pipeline.git
-git clone https://github.com/realjules/ml-oops-compliance.git
-git clone https://github.com/realjules/ml-oops-infrastructure.git
+git clone https://github.com/realjules/monitor.ai.git
+cd monitor.ai
+```
 
-# 2. Set up infrastructure
-cd ml-oops-infrastructure
+2. **Set up Infrastructure**:
+```bash
 # Create infrastructure using Terraform
-cd terraform/environments/dev
+cd infrastructure/terraform
 terraform init
 terraform apply
 
-# 3. Deploy Kubernetes components
-cd ../../kubernetes
+# Deploy Kubernetes components
+cd ../kubernetes
 kubectl apply -k base/
-kubectl apply -k overlays/dev/
+```
 
-# 4. Start monitoring stack
+3. **Start Monitoring Stack**:
+```bash
+# Install monitoring components
 helm install prometheus prometheus-community/kube-prometheus-stack
 helm install grafana grafana/grafana
+```
 
-# 5. Start core services
-# Model Registry
-cd ../../ml-oops-model-registry
+4. **Start Core Services**:
+```bash
+# Build and start all services
 docker-compose up -d
 
-# Data Pipeline
-cd ../ml-oops-data-pipeline
-docker-compose up -d
-
-# Compliance Service
-cd ../ml-oops-compliance
-docker-compose up -d
-
-# Frontend
-cd ../ml_oops_healthcare/frontend
+# Start frontend development server
+cd services/frontend
 npm install
 npm run dev
 ```
 
-4. Component Relationships:
+## Core Components
 
-a. **ml-oops-model-registry**:
+### Healthcare Service
+- Provides ML-based healthcare analysis
+- Manages patient data and predictions
+- Integrates with all other services
+- Ensures HIPAA compliance
+
+### Model Registry
 - Stores and versions ML models
 - Manages model metadata
 - Handles model deployment
@@ -76,7 +99,7 @@ a. **ml-oops-model-registry**:
   * Compliance (for model validation)
   * Infrastructure (for deployment)
 
-b. **ml-oops-data-pipeline**:
+### Data Pipeline
 - Processes training data
 - Trains models
 - Validates results
@@ -85,7 +108,7 @@ b. **ml-oops-data-pipeline**:
   * Compliance (logs training activities)
   * Infrastructure (for compute resources)
 
-c. **ml-oops-compliance**:
+### Compliance Service
 - Monitors all activities
 - Enforces policies
 - Generates compliance reports
@@ -94,19 +117,19 @@ c. **ml-oops-compliance**:
   * Data Pipeline (audits training)
   * Infrastructure (logs activities)
 
-d. **ml-oops-infrastructure**:
+### Infrastructure
 - Manages all infrastructure
 - Handles deployments
 - Monitors system health
 - Integrates with:
-  * All other repositories
+  * All other services
   * Cloud providers
   * Kubernetes clusters
 
-5. Access Points:
+## Service Access Points
 
 ```plaintext
-Frontend UI:     http://localhost:50711
+Frontend UI:     http://localhost:52209
 Model Registry:  http://localhost:8000
 Data Pipeline:   http://localhost:8080
 Compliance:      http://localhost:8001
@@ -114,33 +137,7 @@ Grafana:         http://localhost:3000
 Prometheus:      http://localhost:9090
 ```
 
-6. Key Features by Component:
-
-a. Model Registry:
-- Model versioning
-- A/B testing
-- Deployment management
-- Performance tracking
-
-b. Data Pipeline:
-- Data ingestion
-- Training pipelines
-- Validation workflows
-- Feature engineering
-
-c. Compliance:
-- HIPAA compliance
-- Audit trails
-- Policy enforcement
-- Reporting
-
-d. Infrastructure:
-- Kubernetes management
-- Monitoring
-- Scaling
-- Security
-
-7. Development Workflow:
+## Development Workflow
 
 ```mermaid
 graph LR
@@ -150,7 +147,7 @@ graph LR
     D -- "Deploy" --> E[Production]
 ```
 
-8. Monitoring Flow:
+## Monitoring Architecture
 
 ```mermaid
 graph TD
@@ -162,7 +159,43 @@ graph TD
     E -- "Notify" --> F[Teams/Email/Slack]
 ```
 
-Would you like me to:
-1. Provide more details about any specific component?
-2. Create a detailed setup guide for a specific service?
-3. Show example configurations for any part of the system?
+## Development
+
+1. **Local Development Setup**:
+```bash
+# Install dependencies
+pip install -r requirements.txt
+npm install --prefix services/frontend
+
+# Start services in development mode
+docker-compose -f docker-compose.dev.yml up
+```
+
+2. **Running Tests**:
+```bash
+# Run all tests
+python -m pytest tests/
+
+# Run specific test suite
+python -m pytest tests/healthcare/
+```
+
+## Security Features
+
+- HIPAA Compliance monitoring
+- Audit logging
+- Access control and authentication
+- Encrypted data storage and transmission
+- Regular security scanning
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details
