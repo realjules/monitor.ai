@@ -102,9 +102,9 @@ services:
       - node-modules:/app/node_modules
       - npm-cache:/root/.npm
     ports:
-      - "52209:52209"
+      - "8003:8003"
     environment:
-      - PORT=52209
+      - PORT=8003
       - HOST=0.0.0.0
       - NODE_ENV=development
       - VITE_API_URL=http://localhost:8002
@@ -114,7 +114,7 @@ services:
       sh -c "
         echo 'Starting Frontend service...' &&
         sleep 15 &&
-        npm run dev -- --port 52209 --host 0.0.0.0
+        npm run dev -- --port 8003 --host 0.0.0.0
       "
     depends_on:
       healthcare:
