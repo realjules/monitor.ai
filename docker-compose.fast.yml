@@ -17,16 +17,18 @@ services:
       - FLASK_ENV=development
       - FLASK_DEBUG=1
       - PYTHONUNBUFFERED=1
-      - PYTHONDONTWRITEBYTECODE=1
     command: >
-      sh -c "sleep 10 &&
-             python -m uvicorn api.main:app --host 0.0.0.0 --port 52209 --reload --reload-dir /app"
+      sh -c "
+        echo 'Starting Healthcare service...' &&
+        sleep 10 &&
+        python -m uvicorn api.main:app --host 0.0.0.0 --port 52209 --reload --reload-dir /app --log-level debug
+      "
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:52209/health || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 40s
+      test: ["CMD-SHELL", "curl -f http://localhost:52209/health > /dev/null 2>&1 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
     depends_on:
       model-registry:
         condition: service_healthy
@@ -49,16 +51,18 @@ services:
       - ALLOW_IFRAME=true
       - CORS_ORIGINS=*
       - PYTHONUNBUFFERED=1
-      - PYTHONDONTWRITEBYTECODE=1
     command: >
-      sh -c "sleep 5 &&
-             python -m uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload --reload-dir /app"
+      sh -c "
+        echo 'Starting Model Registry service...' &&
+        sleep 5 &&
+        python -m uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload --reload-dir /app --log-level debug
+      "
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 30s
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/health > /dev/null 2>&1 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
 
   compliance:
     build:
@@ -76,16 +80,18 @@ services:
       - ALLOW_IFRAME=true
       - CORS_ORIGINS=*
       - PYTHONUNBUFFERED=1
-      - PYTHONDONTWRITEBYTECODE=1
     command: >
-      sh -c "sleep 5 &&
-             python -m uvicorn audit.main:app --host 0.0.0.0 --port 8001 --reload --reload-dir /app"
+      sh -c "
+        echo 'Starting Compliance service...' &&
+        sleep 5 &&
+        python -m uvicorn audit.main:app --host 0.0.0.0 --port 8001 --reload --reload-dir /app --log-level debug
+      "
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8001/health || exit 1"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
-      start_period: 30s
+      test: ["CMD-SHELL", "curl -f http://localhost:8001/health > /dev/null 2>&1 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
 
   frontend:
     build:
@@ -96,25 +102,28 @@ services:
       - node-modules:/app/node_modules
       - npm-cache:/root/.npm
     ports:
-      - "52209:52209"
+      - "3000:3000"
     environment:
-      - PORT=52209
+      - PORT=3000
       - HOST=0.0.0.0
       - NODE_ENV=development
       - VITE_API_URL=http://localhost:52209
       - CHOKIDAR_USEPOLLING=true
       - WATCHPACK_POLLING=true
     command: >
-      sh -c "sleep 15 &&
-             npm run dev -- --port 52209 --host 0.0.0.0"
+      sh -c "
+        echo 'Starting Frontend service...' &&
+        sleep 15 &&
+        npm run dev -- --port 3000 --host 0.0.0.0
+      "
     depends_on:
       healthcare:
         condition: service_healthy
 
 volumes:
-  pip-cache:  # Persistent cache for pip packages
-  node-modules:  # Persistent cache for node_modules
-  npm-cache:  # Persistent cache for npm
+  pip-cache:
+  node-modules:
+  npm-cache:
 
 networks:
   default:
