@@ -36,10 +36,28 @@ async def log_prediction(prediction: PredictionLog):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-@app.get("/api/v1/health")
+@app.get("/health")
 async def health_check():
-    return {"status": "healthy"}
+    """Health check endpoint for Docker"""
+    try:
+        # Basic service checks
+        return {
+            "status": "healthy",
+            "service": "healthcare",
+            "timestamp": datetime.now().isoformat(),
+            "version": "1.0.0",
+            "port": int(os.getenv("PORT", 8002))
+        }
+    except Exception as e:
+        return {
+            "status": "unhealthy",
+            "error": str(e),
+            "service": "healthcare",
+            "timestamp": datetime.now().isoformat()
+        }, 500
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=50711)
+    port = int(os.getenv("PORT", 8002))
+    host = os.getenv("HOST", "0.0.0.0")
+    uvicorn.run(app, host=host, port=port)
