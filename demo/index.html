@@ -179,7 +179,26 @@
         </div>
     </div>
 
+    <!-- Required Chart.js plugins -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-box-and-violin-plot"></script>
+    
     <script>
+        // Tab switching functionality
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', () => {
+                // Remove active class from all tabs
+                document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(i => i.classList.remove('active'));
+                
+                // Add active class to clicked tab
+                item.classList.add('active');
+                const tabId = item.getAttribute('data-tab');
+                document.getElementById(tabId).classList.add('active');
+            });
+        });
+
         // Generate sample data
         const hospitals = [
             { id: 1, name: 'Central Hospital', location: 'New York' },
@@ -205,6 +224,105 @@
                 type: modelTypes[i % modelTypes.length]
             }));
         });
+
+        // Generate feature names for explainability
+        const features = [
+            'Age', 'Blood Pressure', 'Heart Rate', 'Temperature', 'Oxygen Level',
+            'White Blood Cell Count', 'Red Blood Cell Count', 'Glucose Level',
+            'Creatinine', 'Sodium Level', 'Potassium Level', 'Platelet Count'
+        ];
+
+        // Generate demographic data
+        const demographics = [
+            { group: 'Age 18-30', size: 1200 },
+            { group: 'Age 31-50', size: 2300 },
+            { group: 'Age 51-70', size: 1800 },
+            { group: 'Age 70+', size: 900 },
+            { group: 'Male', size: 3100 },
+            { group: 'Female', size: 3000 },
+            { group: 'Urban', size: 4000 },
+            { group: 'Rural', size: 2100 }
+        ];
+
+        // Generate drift data
+        const generateDriftData = () => {
+            const driftData = [];
+            const now = new Date();
+            const startDate = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
+            
+            models.forEach(model => {
+                let baseAccuracy = 0.85;
+                let currentDate = new Date(startDate);
+                let driftLevel = 0;
+                
+                while (currentDate <= now) {
+                    // Simulate gradual drift
+                    driftLevel += (Math.random() - 0.48) * 0.01;
+                    const accuracy = baseAccuracy - Math.abs(driftLevel);
+                    
+                    driftData.push({
+                        modelId: model.id,
+                        date: new Date(currentDate),
+                        accuracy,
+                        driftLevel: Math.abs(driftLevel),
+                        featureChanges: features.map(f => ({
+                            feature: f,
+                            change: Math.random() * Math.abs(driftLevel) * 100
+                        }))
+                    });
+                    
+                    currentDate.setDate(currentDate.getDate() + 1);
+                }
+            });
+            
+            return driftData;
+        };
+
+        // Generate SHAP values
+        const generateShapValues = () => {
+            return features.map(feature => ({
+                feature,
+                globalImportance: Math.random(),
+                shapValues: Array.from({ length: 100 }, () => Math.random() * 2 - 1)
+            }));
+        };
+
+        // Generate compliance data
+        const generateComplianceData = () => {
+            return demographics.map(demo => ({
+                group: demo.group,
+                accuracy: 0.8 + Math.random() * 0.15,
+                fairnessScore: 0.85 + Math.random() * 0.1,
+                representation: demo.size / 6100,
+                biasMetrics: {
+                    disparateImpact: 0.9 + Math.random() * 0.2,
+                    equalOpportunity: 0.85 + Math.random() * 0.15,
+                    demographicParity: 0.88 + Math.random() * 0.12
+                }
+            }));
+        };
+
+        // Generate insights
+        const generateInsights = () => {
+            const insightTypes = [
+                'Performance Trend',
+                'Data Drift',
+                'Bias Alert',
+                'Model Health',
+                'Resource Usage'
+            ];
+            
+            return Array.from({ length: 5 }, (_, i) => ({
+                type: insightTypes[i],
+                severity: Math.random() > 0.7 ? 'high' : Math.random() > 0.4 ? 'medium' : 'low',
+                message: `${insightTypes[i]}: ${
+                    Math.random() > 0.5 
+                        ? 'Positive trend detected in model performance'
+                        : 'Potential issue identified in model behavior'
+                }`,
+                timestamp: new Date(Date.now() - Math.random() * 86400000 * 7)
+            }));
+        };
 
         // Generate historical data (1 year)
         const generateHistoricalData = () => {
@@ -395,6 +513,294 @@
             }
         });
 
+        // Initialize all data
+        const historicalData = generateHistoricalData();
+        const driftData = generateDriftData();
+        const shapValues = generateShapValues();
+        const complianceData = generateComplianceData();
+        const insights = generateInsights();
+
+        // Model Drift Detection Chart
+        const driftCtx = document.getElementById('driftChart').getContext('2d');
+        new Chart(driftCtx, {
+            type: 'line',
+            data: {
+                datasets: models.map(model => {
+                    const modelData = driftData.filter(d => d.modelId === model.id);
+                    return {
+                        label: model.name,
+                        data: modelData.map(d => ({
+                            x: d.date,
+                            y: d.driftLevel * 100
+                        })),
+                        borderColor: `hsl(${Math.random() * 360}, 70%, 50%)`,
+                        tension: 0.4
+                    };
+                })
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: {
+                            unit: 'month'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Drift Level (%)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Feature Distribution Changes
+        const featureDriftCtx = document.getElementById('featureDriftChart').getContext('2d');
+        new Chart(featureDriftCtx, {
+            type: 'bar',
+            data: {
+                labels: features,
+                datasets: [{
+                    label: 'Distribution Change',
+                    data: features.map(() => Math.random() * 10),
+                    backgroundColor: 'rgba(255, 107, 53, 0.5)',
+                    borderColor: 'rgba(255, 107, 53, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Change Magnitude (%)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Feature Importance Chart
+        const featureImportanceCtx = document.getElementById('featureImportanceChart').getContext('2d');
+        new Chart(featureImportanceCtx, {
+            type: 'bar',
+            data: {
+                labels: features,
+                datasets: [{
+                    label: 'Global Importance',
+                    data: shapValues.map(s => s.globalImportance),
+                    backgroundColor: 'rgba(26, 101, 158, 0.5)',
+                    borderColor: 'rgba(26, 101, 158, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        // SHAP Values Distribution
+        const shapCtx = document.getElementById('shapValuesChart').getContext('2d');
+        new Chart(shapCtx, {
+            type: 'violin',
+            data: {
+                labels: features,
+                datasets: [{
+                    data: shapValues.map(s => ({
+                        min: Math.min(...s.shapValues),
+                        q1: quantile(s.shapValues, 0.25),
+                        median: quantile(s.shapValues, 0.5),
+                        q3: quantile(s.shapValues, 0.75),
+                        max: Math.max(...s.shapValues),
+                        points: s.shapValues
+                    })),
+                    backgroundColor: 'rgba(26, 101, 158, 0.2)',
+                    borderColor: 'rgba(26, 101, 158, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        // Bias Metrics Chart
+        const biasCtx = document.getElementById('biasChart').getContext('2d');
+        new Chart(biasCtx, {
+            type: 'radar',
+            data: {
+                labels: demographics.map(d => d.group),
+                datasets: [{
+                    label: 'Accuracy',
+                    data: complianceData.map(d => d.accuracy * 100),
+                    borderColor: 'rgba(255, 107, 53, 1)',
+                    backgroundColor: 'rgba(255, 107, 53, 0.2)'
+                }, {
+                    label: 'Fairness Score',
+                    data: complianceData.map(d => d.fairnessScore * 100),
+                    borderColor: 'rgba(26, 101, 158, 1)',
+                    backgroundColor: 'rgba(26, 101, 158, 0.2)'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        min: 70,
+                        max: 100
+                    }
+                }
+            }
+        });
+
+        // Demographic Parity Chart
+        const parityCtx = document.getElementById('parityChart').getContext('2d');
+        new Chart(parityCtx, {
+            type: 'bar',
+            data: {
+                labels: demographics.map(d => d.group),
+                datasets: [{
+                    label: 'Representation',
+                    data: complianceData.map(d => d.representation * 100),
+                    backgroundColor: 'rgba(255, 107, 53, 0.5)',
+                    borderColor: 'rgba(255, 107, 53, 1)',
+                    borderWidth: 1,
+                    yAxisID: 'y'
+                }, {
+                    label: 'Demographic Parity',
+                    data: complianceData.map(d => d.biasMetrics.demographicParity * 100),
+                    type: 'line',
+                    borderColor: 'rgba(26, 101, 158, 1)',
+                    yAxisID: 'y1'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        type: 'linear',
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'Representation (%)'
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'Parity Score (%)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Model Comparison Chart
+        const comparisonCtx = document.getElementById('comparisonChart').getContext('2d');
+        new Chart(comparisonCtx, {
+            type: 'radar',
+            data: {
+                labels: ['Accuracy', 'Fairness', 'Stability', 'Efficiency', 'Robustness'],
+                datasets: models.map(model => ({
+                    label: model.name,
+                    data: Array.from({ length: 5 }, () => 70 + Math.random() * 30),
+                    borderColor: `hsl(${Math.random() * 360}, 70%, 50%)`,
+                    backgroundColor: `hsla(${Math.random() * 360}, 70%, 50%, 0.2)`
+                }))
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    r: {
+                        min: 70,
+                        max: 100
+                    }
+                }
+            }
+        });
+
+        // Trade-off Analysis Chart
+        const tradeoffCtx = document.getElementById('tradeoffChart').getContext('2d');
+        new Chart(tradeoffCtx, {
+            type: 'scatter',
+            data: {
+                datasets: models.map(model => ({
+                    label: model.name,
+                    data: [{
+                        x: 75 + Math.random() * 20,
+                        y: 75 + Math.random() * 20
+                    }],
+                    backgroundColor: `hsla(${Math.random() * 360}, 70%, 50%, 0.6)`
+                }))
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        min: 70,
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: 'Accuracy (%)'
+                        }
+                    },
+                    y: {
+                        min: 70,
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: 'Fairness Score (%)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // A/B Testing Results Chart
+        const abTestCtx = document.getElementById('abTestChart').getContext('2d');
+        new Chart(abTestCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Accuracy', 'F1 Score', 'AUC-ROC', 'Precision', 'Recall'],
+                datasets: models.slice(0, 2).map((model, i) => ({
+                    label: `${model.name} ${i === 0 ? '(A)' : '(B)'}`,
+                    data: Array.from({ length: 5 }, () => 75 + Math.random() * 20),
+                    backgroundColor: i === 0 ? 'rgba(255, 107, 53, 0.5)' : 'rgba(26, 101, 158, 0.5)',
+                    borderColor: i === 0 ? 'rgba(255, 107, 53, 1)' : 'rgba(26, 101, 158, 1)',
+                    borderWidth: 1
+                }))
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        min: 70,
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: 'Score (%)'
+                        }
+                    }
+                }
+            }
+        });
+
         // Monte Carlo Dropout Chart
         const mcDropoutCtx = document.getElementById('mcDropoutChart').getContext('2d');
         const latestData = models.map(model => {
@@ -435,6 +841,158 @@
                 }
             }
         });
+
+        // Populate dynamic content
+        function populateDynamicContent() {
+            // Populate drift alerts
+            const driftAlerts = document.getElementById('driftAlerts');
+            if (driftAlerts) {
+                const alerts = [
+                    {
+                        type: 'warning',
+                        title: 'Significant Drift Detected',
+                        message: 'Model performance has decreased by 5% in the last week'
+                    },
+                    {
+                        type: 'info',
+                        title: 'Feature Distribution Change',
+                        message: 'Age distribution shows significant shift in new data'
+                    },
+                    {
+                        type: 'success',
+                        title: 'Model Stability',
+                        message: 'All other features remain stable with minimal drift'
+                    }
+                ];
+
+                driftAlerts.innerHTML = alerts.map(alert => `
+                    <div class="alert alert-${alert.type}">
+                        <h4 class="font-semibold">${alert.title}</h4>
+                        <p>${alert.message}</p>
+                    </div>
+                `).join('');
+            }
+
+            // Populate local explanation
+            const localExplanation = document.getElementById('localExplanation');
+            if (localExplanation) {
+                const samplePrediction = {
+                    prediction: 0.85,
+                    confidence: 0.92,
+                    features: features.map(f => ({
+                        name: f,
+                        value: Math.random() * 100,
+                        contribution: Math.random() * 2 - 1
+                    }))
+                };
+
+                localExplanation.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <span>Prediction:</span>
+                            <span class="font-semibold">${(samplePrediction.prediction * 100).toFixed(1)}%</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span>Confidence:</span>
+                            <span class="font-semibold">${(samplePrediction.confidence * 100).toFixed(1)}%</span>
+                        </div>
+                        <div class="space-y-2">
+                            ${samplePrediction.features.slice(0, 5).map(f => `
+                                <div class="flex justify-between items-center">
+                                    <span>${f.name}:</span>
+                                    <span class="font-semibold">${f.value.toFixed(1)}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Populate AI insights
+            const aiInsights = document.getElementById('aiInsights');
+            if (aiInsights) {
+                aiInsights.innerHTML = insights.map(insight => `
+                    <div class="insight-card">
+                        <div class="flex justify-between items-center mb-2">
+                            <h4 class="font-semibold">${insight.type}</h4>
+                            <span class="badge badge-${insight.severity}">${insight.severity}</span>
+                        </div>
+                        <p class="text-sm">${insight.message}</p>
+                        <p class="text-xs text-gray-500 mt-1">${insight.timestamp.toLocaleString()}</p>
+                    </div>
+                `).join('');
+            }
+
+            // Populate compliance checklist
+            const complianceChecklist = document.getElementById('complianceChecklist');
+            if (complianceChecklist) {
+                const checklistItems = [
+                    { item: 'Data Privacy Compliance', status: 'completed', score: 98 },
+                    { item: 'Model Documentation', status: 'completed', score: 95 },
+                    { item: 'Bias Assessment', status: 'completed', score: 92 },
+                    { item: 'Security Audit', status: 'in-progress', score: 85 },
+                    { item: 'Performance Monitoring', status: 'completed', score: 94 }
+                ];
+
+                complianceChecklist.innerHTML = checklistItems.map(item => `
+                    <div class="checklist-item ${item.status}">
+                        <div class="flex-1">
+                            <div class="flex justify-between items-center">
+                                <span class="font-semibold">${item.item}</span>
+                                <span class="badge badge-${item.score >= 95 ? 'success' : item.score >= 90 ? 'warning' : 'danger'}">
+                                    ${item.score}%
+                                </span>
+                            </div>
+                            <div class="progress-bar mt-2">
+                                <div class="progress-bar-fill" style="width: ${item.score}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            // Populate A/B test stats
+            const abTestStats = document.getElementById('abTestStats');
+            if (abTestStats) {
+                const stats = {
+                    sampleSize: 10000,
+                    confidence: 95,
+                    improvement: 7.2,
+                    pValue: 0.001
+                };
+
+                abTestStats.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="card">
+                            <h4 class="text-lg font-semibold mb-2">Test Results</h4>
+                            <div class="space-y-2">
+                                <div class="flex justify-between">
+                                    <span>Sample Size:</span>
+                                    <span class="font-semibold">${stats.sampleSize.toLocaleString()}</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Confidence Level:</span>
+                                    <span class="font-semibold">${stats.confidence}%</span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>Improvement:</span>
+                                    <span class="font-semibold ${stats.improvement > 0 ? 'text-green-600' : 'text-red-600'}">
+                                        ${stats.improvement > 0 ? '+' : ''}${stats.improvement}%
+                                    </span>
+                                </div>
+                                <div class="flex justify-between">
+                                    <span>P-value:</span>
+                                    <span class="font-semibold">${stats.pValue}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // Call the function to populate dynamic content
+        populateDynamicContent();
 
         // Utility function for calculating quantiles
         function quantile(arr, q) {
