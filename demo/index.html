@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitor.AI - Model Performance Dashboard</title>
+    
+    <!-- Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+        :root {
+            --primary: #ff6b35;
+            --secondary: #004e89;
+            --accent: #1a659e;
+            --background: #f7f9fc;
+            --text: #2b2d42;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+        }
+
+        .sidebar {
+            background-color: white;
+            border-right: 1px solid #e5e7eb;
+            height: 100vh;
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 1.5rem;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 2rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .metric-card {
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            color: white;
+        }
+
+        .nav-item {
+            padding: 0.75rem 1rem;
+            margin: 0.25rem 0;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nav-item:hover {
+            background-color: var(--background);
+        }
+
+        .nav-item.active {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="mb-8">
+            <h1 class="text-2xl font-bold" style="color: var(--primary)">Monitor.AI</h1>
+            <p class="text-sm text-gray-600">Model Performance Dashboard</p>
+        </div>
+
+        <nav>
+            <div class="nav-item active">
+                Performance Overview
+            </div>
+            <div class="nav-item">
+                Hospitals
+            </div>
+            <div class="nav-item">
+                Models
+            </div>
+            <div class="nav-item">
+                Compliance
+            </div>
+        </nav>
+
+        <div class="mt-8">
+            <h3 class="text-sm font-semibold mb-2">Filters</h3>
+            <div class="space-y-4">
+                <div>
+                    <label class="text-sm">Hospital</label>
+                    <select class="w-full p-2 rounded border" id="hospitalFilter">
+                        <option value="all">All Hospitals</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-sm">Model Type</label>
+                    <select class="w-full p-2 rounded border" id="modelFilter">
+                        <option value="all">All Models</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="text-sm">Time Range</label>
+                    <select class="w-full p-2 rounded border" id="timeFilter">
+                        <option value="7d">Last 7 Days</option>
+                        <option value="30d">Last 30 Days</option>
+                        <option value="90d">Last 90 Days</option>
+                        <option value="1y" selected>Last Year</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="grid grid-cols-3 gap-4 mb-6">
+            <div class="card metric-card">
+                <h3 class="text-lg font-semibold mb-2">Total Models</h3>
+                <p class="text-3xl font-bold" id="totalModels">0</p>
+            </div>
+            <div class="card metric-card">
+                <h3 class="text-lg font-semibold mb-2">Avg Confidence</h3>
+                <p class="text-3xl font-bold" id="avgConfidence">0%</p>
+            </div>
+            <div class="card metric-card">
+                <h3 class="text-lg font-semibold mb-2">Active Hospitals</h3>
+                <p class="text-3xl font-bold" id="activeHospitals">0</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+            <div class="card">
+                <h3 class="text-lg font-semibold mb-4">Performance Over Time</h3>
+                <div class="chart-container">
+                    <canvas id="performanceChart"></canvas>
+                </div>
+            </div>
+            <div class="card">
+                <h3 class="text-lg font-semibold mb-4">Uncertainty Distribution</h3>
+                <div class="chart-container">
+                    <canvas id="uncertaintyChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <h3 class="text-lg font-semibold mb-4">Model Performance by Hospital</h3>
+            <div class="chart-container">
+                <canvas id="hospitalChart"></canvas>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <h3 class="text-lg font-semibold mb-4">Monte Carlo Dropout Simulation Results</h3>
+            <div class="chart-container">
+                <canvas id="mcDropoutChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Generate sample data
+        const hospitals = [
+            { id: 1, name: 'Central Hospital', location: 'New York' },
+            { id: 2, name: 'Memorial Medical', location: 'Los Angeles' },
+            { id: 3, name: 'Unity Healthcare', location: 'Chicago' }
+        ];
+
+        const modelTypes = [
+            'Diagnostic Imaging',
+            'Patient Risk Assessment',
+            'Treatment Response',
+            'Disease Progression',
+            'Resource Allocation'
+        ];
+
+        // Generate random number of models per hospital (2-5)
+        const models = hospitals.flatMap(hospital => {
+            const numModels = Math.floor(Math.random() * 4) + 2; // 2-5 models
+            return Array.from({ length: numModels }, (_, i) => ({
+                id: `${hospital.id}-${i + 1}`,
+                name: `${modelTypes[i % modelTypes.length]} Model`,
+                hospitalId: hospital.id,
+                type: modelTypes[i % modelTypes.length]
+            }));
+        });
+
+        // Generate historical data (1 year)
+        const generateHistoricalData = () => {
+            const data = [];
+            const now = new Date();
+            const startDate = new Date(now.getFullYear() - 1, now.getMonth(), now.getDate());
+            
+            models.forEach(model => {
+                let baseAccuracy = 0.75 + Math.random() * 0.15; // Base accuracy between 75-90%
+                let currentDate = new Date(startDate);
+                
+                while (currentDate <= now) {
+                    // Add some random variation to metrics
+                    const accuracy = baseAccuracy + (Math.random() - 0.5) * 0.05;
+                    const uncertainty = Math.random() * 0.2;
+                    const confidence = 0.7 + Math.random() * 0.25;
+                    
+                    // Generate Monte Carlo dropout simulations
+                    const mcSimulations = Array.from({ length: 100 }, () => 
+                        accuracy + (Math.random() - 0.5) * uncertainty
+                    );
+                    
+                    data.push({
+                        modelId: model.id,
+                        date: new Date(currentDate),
+                        accuracy,
+                        uncertainty,
+                        confidence,
+                        predictions: Math.floor(Math.random() * 1000),
+                        mcSimulations
+                    });
+                    
+                    // Move to next day
+                    currentDate.setDate(currentDate.getDate() + 1);
+                }
+            });
+            
+            return data;
+        };
+
+        const historicalData = generateHistoricalData();
+
+        // Update metrics
+        document.getElementById('totalModels').textContent = models.length;
+        document.getElementById('activeHospitals').textContent = hospitals.length;
+        
+        const avgConf = historicalData.reduce((acc, curr) => acc + curr.confidence, 0) / historicalData.length;
+        document.getElementById('avgConfidence').textContent = `${(avgConf * 100).toFixed(1)}%`;
+
+        // Performance Chart
+        const performanceCtx = document.getElementById('performanceChart').getContext('2d');
+        new Chart(performanceCtx, {
+            type: 'line',
+            data: {
+                datasets: models.map(model => {
+                    const modelData = historicalData.filter(d => d.modelId === model.id);
+                    return {
+                        label: model.name,
+                        data: modelData.map(d => ({
+                            x: d.date,
+                            y: d.accuracy * 100
+                        })),
+                        borderColor: `hsl(${Math.random() * 360}, 70%, 50%)`,
+                        tension: 0.4
+                    };
+                })
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: {
+                            unit: 'month'
+                        }
+                    },
+                    y: {
+                        min: 70,
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: 'Accuracy (%)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Uncertainty Chart
+        const uncertaintyCtx = document.getElementById('uncertaintyChart').getContext('2d');
+        new Chart(uncertaintyCtx, {
+            type: 'bubble',
+            data: {
+                datasets: models.map(model => {
+                    const modelData = historicalData.filter(d => d.modelId === model.id);
+                    const latestData = modelData[modelData.length - 1];
+                    return {
+                        label: model.name,
+                        data: [{
+                            x: latestData.accuracy * 100,
+                            y: latestData.uncertainty * 100,
+                            r: latestData.predictions / 50
+                        }],
+                        backgroundColor: `hsla(${Math.random() * 360}, 70%, 50%, 0.6)`
+                    };
+                })
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        min: 70,
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: 'Accuracy (%)'
+                        }
+                    },
+                    y: {
+                        min: 0,
+                        max: 25,
+                        title: {
+                            display: true,
+                            text: 'Uncertainty (%)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Hospital Performance Chart
+        const hospitalCtx = document.getElementById('hospitalChart').getContext('2d');
+        const hospitalData = hospitals.map(hospital => {
+            const hospitalModels = models.filter(m => m.hospitalId === hospital.id);
+            const modelData = hospitalModels.flatMap(model => 
+                historicalData.filter(d => d.modelId === model.id)
+            );
+            return {
+                hospital: hospital.name,
+                avgAccuracy: modelData.reduce((acc, curr) => acc + curr.accuracy, 0) / modelData.length,
+                avgUncertainty: modelData.reduce((acc, curr) => acc + curr.uncertainty, 0) / modelData.length,
+                totalPredictions: modelData.reduce((acc, curr) => acc + curr.predictions, 0)
+            };
+        });
+
+        new Chart(hospitalCtx, {
+            type: 'bar',
+            data: {
+                labels: hospitalData.map(d => d.hospital),
+                datasets: [{
+                    label: 'Average Accuracy',
+                    data: hospitalData.map(d => d.avgAccuracy * 100),
+                    backgroundColor: 'rgba(255, 107, 53, 0.8)',
+                    yAxisID: 'y'
+                }, {
+                    label: 'Total Predictions',
+                    data: hospitalData.map(d => d.totalPredictions),
+                    type: 'line',
+                    borderColor: 'rgba(0, 78, 137, 0.8)',
+                    yAxisID: 'y1'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        type: 'linear',
+                        position: 'left',
+                        min: 0,
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: 'Accuracy (%)'
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'Total Predictions'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Monte Carlo Dropout Chart
+        const mcDropoutCtx = document.getElementById('mcDropoutChart').getContext('2d');
+        const latestData = models.map(model => {
+            const modelData = historicalData.filter(d => d.modelId === model.id);
+            return modelData[modelData.length - 1];
+        });
+
+        new Chart(mcDropoutCtx, {
+            type: 'violin',
+            data: {
+                labels: models.map(m => m.name),
+                datasets: [{
+                    data: latestData.map(d => ({
+                        min: Math.min(...d.mcSimulations) * 100,
+                        q1: quantile(d.mcSimulations, 0.25) * 100,
+                        median: quantile(d.mcSimulations, 0.5) * 100,
+                        q3: quantile(d.mcSimulations, 0.75) * 100,
+                        max: Math.max(...d.mcSimulations) * 100,
+                        points: d.mcSimulations.map(v => v * 100)
+                    })),
+                    backgroundColor: 'rgba(255, 107, 53, 0.5)',
+                    borderColor: 'rgba(255, 107, 53, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        min: 70,
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: 'Model Output Distribution (%)'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Utility function for calculating quantiles
+        function quantile(arr, q) {
+            const sorted = arr.slice().sort((a, b) => a - b);
+            const pos = (sorted.length - 1) * q;
+            const base = Math.floor(pos);
+            const rest = pos - base;
+            if (sorted[base + 1] !== undefined) {
+                return sorted[base] + rest * (sorted[base + 1] - sorted[base]);
+            } else {
+                return sorted[base];
+            }
+        }
+    </script>
+</body>
+</html>
