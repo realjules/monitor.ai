@@ -8,9 +8,9 @@ services:
       - ./core/healthcare:/app
       - pip-cache:/root/.cache/pip
     ports:
-      - "52209:52209"
+      - "8002:8002"
     environment:
-      - PORT=52209
+      - PORT=8002
       - HOST=0.0.0.0
       - ALLOW_IFRAME=true
       - CORS_ORIGINS=*
@@ -21,10 +21,10 @@ services:
       sh -c "
         echo 'Starting Healthcare service...' &&
         sleep 10 &&
-        python -m uvicorn api.main:app --host 0.0.0.0 --port 52209 --reload --reload-dir /app --log-level debug
+        python -m uvicorn api.main:app --host 0.0.0.0 --port 8002 --reload --reload-dir /app --log-level debug
       "
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:52209/health > /dev/null 2>&1 || exit 1"]
+      test: ["CMD-SHELL", "curl -f http://localhost:8002/health > /dev/null 2>&1 || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -102,19 +102,19 @@ services:
       - node-modules:/app/node_modules
       - npm-cache:/root/.npm
     ports:
-      - "3000:3000"
+      - "52209:52209"
     environment:
-      - PORT=3000
+      - PORT=52209
       - HOST=0.0.0.0
       - NODE_ENV=development
-      - VITE_API_URL=http://localhost:52209
+      - VITE_API_URL=http://localhost:8002
       - CHOKIDAR_USEPOLLING=true
       - WATCHPACK_POLLING=true
     command: >
       sh -c "
         echo 'Starting Frontend service...' &&
         sleep 15 &&
-        npm run dev -- --port 3000 --host 0.0.0.0
+        npm run dev -- --port 52209 --host 0.0.0.0
       "
     depends_on:
       healthcare:
