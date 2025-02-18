@@ -276,6 +276,216 @@
         // Initialize data loading
         loadData();
 
+        // Update UI with current data
+        async function updateUI() {
+            // Update filter dropdowns
+            const hospitalFilter = document.getElementById('hospitalFilter');
+            const modelFilter = document.getElementById('modelFilter');
+            const timeFilter = document.getElementById('timeFilter');
+
+            // Clear existing options
+            hospitalFilter.innerHTML = '<option value="all">All Hospitals</option>';
+            modelFilter.innerHTML = '<option value="all">All Models</option>';
+
+            // Add hospital options
+            hospitals.forEach(hospital => {
+                const option = document.createElement('option');
+                option.value = hospital.id;
+                option.textContent = hospital.name;
+                hospitalFilter.appendChild(option);
+            });
+
+            // Add model type options
+            modelTypes.forEach(type => {
+                const option = document.createElement('option');
+                option.value = type;
+                option.textContent = type;
+                modelFilter.appendChild(option);
+            });
+
+            // Add event listeners for filters
+            [hospitalFilter, modelFilter, timeFilter].forEach(filter => {
+                filter.addEventListener('change', async () => {
+                    await updateMetrics();
+                    await updateCharts();
+                });
+            });
+
+            // Initial update of metrics and charts
+            await updateMetrics();
+            await updateCharts();
+        }
+
+        // Update metrics based on current filters
+        async function updateMetrics() {
+            const hospitalFilter = document.getElementById('hospitalFilter').value;
+            const modelFilter = document.getElementById('modelFilter').value;
+            const timeFilter = document.getElementById('timeFilter').value;
+
+            try {
+                // Fetch metrics from API
+                const metricsData = await fetchData(`${endpoints.metrics}?hospital=${hospitalFilter}&model_type=${modelFilter}&time_range=${timeFilter}`);
+
+                if (metricsData) {
+                    // Update metrics with real data
+                    document.getElementById('totalModels').textContent = metricsData.total_models || models.length;
+                    document.getElementById('avgConfidence').textContent = `${(metricsData.avg_confidence * 100).toFixed(1)}%`;
+                    document.getElementById('activeHospitals').textContent = metricsData.active_hospitals || hospitals.length;
+                } else {
+                    // Fallback to calculated metrics from sample data
+                    document.getElementById('totalModels').textContent = models.length;
+                    const avgConf = historicalData.reduce((acc, curr) => acc + curr.confidence, 0) / historicalData.length;
+                    document.getElementById('avgConfidence').textContent = `${(avgConf * 100).toFixed(1)}%`;
+                    document.getElementById('activeHospitals').textContent = hospitals.length;
+                }
+            } catch (error) {
+                console.error('Error updating metrics:', error);
+            }
+        }
+
+        // Update all charts based on current filters
+        async function updateCharts() {
+            const hospitalFilter = document.getElementById('hospitalFilter').value;
+            const modelFilter = document.getElementById('modelFilter').value;
+            const timeFilter = document.getElementById('timeFilter').value;
+
+            try {
+                // Fetch performance data from API
+                const performanceData = await fetchData(
+                    `${endpoints.performance}?hospital=${hospitalFilter}&model_type=${modelFilter}&time_range=${timeFilter}`
+                );
+
+                if (performanceData) {
+                    // Update charts with real data
+                    updatePerformanceChart(performanceData.performance);
+                    updateUncertaintyChart(performanceData.uncertainty);
+                    updateHospitalChart(performanceData.hospital_metrics);
+                    updateMCDropoutChart(performanceData.mc_dropout);
+                } else {
+                    // Fallback to sample data
+                    const sampleData = generateHistoricalData();
+                    updatePerformanceChart(sampleData);
+                    updateUncertaintyChart(sampleData);
+                    updateHospitalChart(sampleData);
+                    updateMCDropoutChart(sampleData);
+                }
+            } catch (error) {
+                console.error('Error updating charts:', error);
+            }
+        }
+
+        // Auto-refresh data every 5 minutes
+        setInterval(async () => {
+            await loadData();
+        }, 5 * 60 * 1000);
+
+        // Chart update functions
+        function updatePerformanceChart(data) {
+            const ctx = document.getElementById('performanceChart').getContext('2d');
+            const chart = Chart.getChart(ctx);
+            
+            if (chart) {
+                chart.data.datasets = models.map(model => {
+                    const modelData = data.filter(d => d.modelId === model.id);
+                    return {
+                        label: model.name,
+                        data: modelData.map(d => ({
+                            x: d.date,
+                            y: d.accuracy * 100
+                        })),
+                        borderColor: `hsl(${Math.random() * 360}, 70%, 50%)`,
+                        tension: 0.4
+                    };
+                });
+                chart.update();
+            }
+        }
+
+        function updateUncertaintyChart(data) {
+            const ctx = document.getElementById('uncertaintyChart').getContext('2d');
+            const chart = Chart.getChart(ctx);
+            
+            if (chart) {
+                chart.data.datasets = models.map(model => {
+                    const modelData = data.filter(d => d.modelId === model.id);
+                    const latestData = modelData[modelData.length - 1];
+                    return {
+                        label: model.name,
+                        data: [{
+                            x: latestData.accuracy * 100,
+                            y: latestData.uncertainty * 100,
+                            r: latestData.predictions / 50
+                        }],
+                        backgroundColor: `hsla(${Math.random() * 360}, 70%, 50%, 0.6)`
+                    };
+                });
+                chart.update();
+            }
+        }
+
+        function updateHospitalChart(data) {
+            const ctx = document.getElementById('hospitalChart').getContext('2d');
+            const chart = Chart.getChart(ctx);
+            
+            if (chart) {
+                const hospitalData = hospitals.map(hospital => {
+                    const hospitalMetrics = data.find(d => d.hospitalId === hospital.id) || {
+                        avgAccuracy: 0,
+                        totalPredictions: 0
+                    };
+                    return {
+                        hospital: hospital.name,
+                        avgAccuracy: hospitalMetrics.avgAccuracy,
+                        totalPredictions: hospitalMetrics.totalPredictions
+                    };
+                });
+
+                chart.data.labels = hospitalData.map(d => d.hospital);
+                chart.data.datasets = [{
+                    label: 'Average Accuracy',
+                    data: hospitalData.map(d => d.avgAccuracy * 100),
+                    backgroundColor: 'rgba(255, 107, 53, 0.8)',
+                    yAxisID: 'y'
+                }, {
+                    label: 'Total Predictions',
+                    data: hospitalData.map(d => d.totalPredictions),
+                    type: 'line',
+                    borderColor: 'rgba(0, 78, 137, 0.8)',
+                    yAxisID: 'y1'
+                }];
+                chart.update();
+            }
+        }
+
+        function updateMCDropoutChart(data) {
+            const ctx = document.getElementById('mcDropoutChart').getContext('2d');
+            const chart = Chart.getChart(ctx);
+            
+            if (chart) {
+                chart.data.labels = models.map(m => m.name);
+                chart.data.datasets = [{
+                    data: models.map(model => {
+                        const modelData = data.find(d => d.modelId === model.id);
+                        if (!modelData) return null;
+                        
+                        const simulations = modelData.mcSimulations.map(v => v * 100);
+                        return {
+                            min: Math.min(...simulations),
+                            q1: quantile(simulations, 0.25),
+                            median: quantile(simulations, 0.5),
+                            q3: quantile(simulations, 0.75),
+                            max: Math.max(...simulations),
+                            points: simulations
+                        };
+                    }).filter(Boolean),
+                    backgroundColor: 'rgba(255, 107, 53, 0.5)',
+                    borderColor: 'rgba(255, 107, 53, 1)',
+                    borderWidth: 1
+                }];
+                chart.update();
+            }
+        }
+
         // Generate historical data (1 year)
         const generateHistoricalData = () => {
             const data = [];
