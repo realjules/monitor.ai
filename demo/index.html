@@ -10,6 +10,14 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
     <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- API Configuration -->
+    <script>
+        const API_CONFIG = {
+            modelRegistry: 'http://localhost:52072',
+            dataPipeline: 'http://localhost:59678'
+        };
+    </script>
     
     <style>
         :root {
@@ -180,31 +188,93 @@
     </div>
 
     <script>
-        // Generate sample data
-        const hospitals = [
-            { id: 1, name: 'Central Hospital', location: 'New York' },
-            { id: 2, name: 'Memorial Medical', location: 'Los Angeles' },
-            { id: 3, name: 'Unity Healthcare', location: 'Chicago' }
-        ];
+        // API endpoints
+        const endpoints = {
+            hospitals: `${API_CONFIG.modelRegistry}/api/v1/hospitals`,
+            models: `${API_CONFIG.modelRegistry}/api/v1/models`,
+            modelTypes: `${API_CONFIG.modelRegistry}/api/v1/model-types`,
+            metrics: `${API_CONFIG.dataPipeline}/api/v1/metrics`,
+            performance: `${API_CONFIG.dataPipeline}/api/v1/performance`
+        };
 
-        const modelTypes = [
-            'Diagnostic Imaging',
-            'Patient Risk Assessment',
-            'Treatment Response',
-            'Disease Progression',
-            'Resource Allocation'
-        ];
+        // Fetch data from APIs with error handling
+        async function fetchData(endpoint) {
+            try {
+                const response = await fetch(endpoint, {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    mode: 'cors'
+                });
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return await response.json();
+            } catch (error) {
+                console.error(`Error fetching data from ${endpoint}:`, error);
+                return null;
+            }
+        }
 
-        // Generate random number of models per hospital (2-5)
-        const models = hospitals.flatMap(hospital => {
-            const numModels = Math.floor(Math.random() * 4) + 2; // 2-5 models
-            return Array.from({ length: numModels }, (_, i) => ({
-                id: `${hospital.id}-${i + 1}`,
-                name: `${modelTypes[i % modelTypes.length]} Model`,
-                hospitalId: hospital.id,
-                type: modelTypes[i % modelTypes.length]
-            }));
-        });
+        // Initialize data
+        let hospitals = [];
+        let modelTypes = [];
+        let models = [];
+
+        // Load data from APIs
+        async function loadData() {
+            try {
+                const [hospitalsData, modelTypesData, modelsData] = await Promise.all([
+                    fetchData(endpoints.hospitals),
+                    fetchData(endpoints.modelTypes),
+                    fetchData(endpoints.models)
+                ]);
+
+                hospitals = hospitalsData || [];
+                modelTypes = modelTypesData || [];
+                models = modelsData || [];
+
+                // If API fails, use sample data
+                if (hospitals.length === 0) {
+                    hospitals = [
+                        { id: 1, name: 'Central Hospital', location: 'New York' },
+                        { id: 2, name: 'Memorial Medical', location: 'Los Angeles' },
+                        { id: 3, name: 'Unity Healthcare', location: 'Chicago' }
+                    ];
+                }
+
+                if (modelTypes.length === 0) {
+                    modelTypes = [
+                        'Diagnostic Imaging',
+                        'Patient Risk Assessment',
+                        'Treatment Response',
+                        'Disease Progression',
+                        'Resource Allocation'
+                    ];
+                }
+
+                if (models.length === 0) {
+                    models = hospitals.flatMap(hospital => {
+                        const numModels = Math.floor(Math.random() * 4) + 2;
+                        return Array.from({ length: numModels }, (_, i) => ({
+                            id: `${hospital.id}-${i + 1}`,
+                            name: `${modelTypes[i % modelTypes.length]} Model`,
+                            hospitalId: hospital.id,
+                            type: modelTypes[i % modelTypes.length]
+                        }));
+                    });
+                }
+
+                // Update UI with the loaded data
+                updateUI();
+            } catch (error) {
+                console.error('Error loading data:', error);
+            }
+        }
+
+        // Initialize data loading
+        loadData();
 
         // Generate historical data (1 year)
         const generateHistoricalData = () => {
