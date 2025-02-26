@@ -1,13 +1,13 @@
-# Monitor.AI - Healthcare ML Monitoring Platform
+# Monitor.AI - ML Model Monitoring Platform
 
-A comprehensive platform for monitoring and managing healthcare ML models with focus on compliance, reliability, and performance.
+A comprehensive platform for monitoring and managing ML models with focus on compliance, reliability, and performance.
 
 ## Repository Structure
 
 ```
 monitor.ai/
 ├── core/                    # Core service implementations
-│   ├── healthcare/         # Healthcare ML service
+│   ├── prediction_service/ # ML prediction service
 │   ├── model_registry/     # Model versioning and management
 │   ├── data_pipeline/      # Data processing and training pipelines
 │   └── compliance/         # Compliance monitoring and auditing
@@ -29,7 +29,7 @@ monitor.ai/
 
 ```mermaid
 graph TD
-    A[Healthcare Service] --> B[Model Registry]
+    A[Prediction Service] --> B[Model Registry]
     A --> C[Data Pipeline]
     A --> D[Compliance Service]
     A --> E[Infrastructure]
@@ -84,11 +84,11 @@ npm run dev
 
 ## Core Components
 
-### Healthcare Service
-- Provides ML-based healthcare analysis
-- Manages patient data and predictions
+### Prediction Service
+- Provides ML-based predictions and analysis
+- Manages prediction requests and results
+- Tracks model performance and uncertainty
 - Integrates with all other services
-- Ensures HIPAA compliance
 
 ### Model Registry
 - Stores and versions ML models
@@ -182,11 +182,12 @@ python -m pytest tests/healthcare/
 
 ## Security Features
 
-- HIPAA Compliance monitoring
-- Audit logging
-- Access control and authentication
+- Regulatory compliance monitoring
+- Comprehensive audit logging
+- Role-based access control
 - Encrypted data storage and transmission
 - Regular security scanning
+- Performance monitoring and alerting
 
 ## Contributing
 
