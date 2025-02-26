@@ -6,7 +6,7 @@ import uvicorn
 
 app = FastAPI(
     title="ML-OOPS Compliance Service",
-    description="HIPAA compliance and audit management for healthcare AI",
+    description="Compliance and audit management for AI systems",
     version="1.0.0"
 )
 
@@ -88,7 +88,7 @@ async def get_policy_requirements(policy_type: str):
                 {
                     "id": "req_1",
                     "name": "Data Encryption",
-                    "description": "All PHI must be encrypted at rest and in transit",
+                    "description": "All sensitive data must be encrypted at rest and in transit",
                     "level": "mandatory"
                 }
             ]

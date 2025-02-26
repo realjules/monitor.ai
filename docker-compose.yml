@@ -62,9 +62,9 @@ services:
     build:
       context: services/frontend
     ports:
-      - "52209:52209"
+      - "51854:51854"
     environment:
-      - PORT=52209
+      - PORT=51854
       - HOST=0.0.0.0
     depends_on:
       - model-registry

@@ -24,12 +24,12 @@ WORKDIR /app
 COPY --from=builder /usr/local/lib/python3.9/site-packages /usr/local/lib/python3.9/site-packages
 
 # Copy application code
-COPY core/healthcare /app/
+COPY core/compliance /app/
 
 ENV PYTHONPATH=/app \
-    PORT=52209 \
+    PORT=8001 \
     HOST=0.0.0.0 \
     PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1
 
-CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "52209", "--reload"]
+CMD ["uvicorn", "api.main:app", "--host", "0.0.0.0", "--port", "8001", "--reload"]
