@@ -21,7 +21,7 @@ const mockPredictions = [
   {
     id: '1',
     modelId: 'model1',
-    patientId: 'PAT001',
+    requestId: 'REQ001',
     prediction: 0.85,
     uncertainty: 0.15,
     timestamp: new Date().toISOString(),

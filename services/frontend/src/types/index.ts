@@ -1,14 +1,14 @@
 export interface User {
   id: string;
   username: string;
-  role: 'radiologist' | 'compliance' | 'admin';
+  role: 'compliance' | 'admin';
   email: string;
 }
 
 export interface Prediction {
   id: string;
   modelId: string;
-  patientId: string;
+  requestId: string;
   prediction: number;
   uncertainty: number;
   timestamp: string;

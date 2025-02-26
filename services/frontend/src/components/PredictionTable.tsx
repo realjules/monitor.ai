@@ -23,7 +23,7 @@ export const PredictionTable: React.FC<PredictionTableProps> = ({ predictions })
         <TableHead>
           <TableRow>
             <TableCell>Timestamp</TableCell>
-            <TableCell>Patient ID</TableCell>
+            <TableCell>Request ID</TableCell>
             <TableCell>Prediction</TableCell>
             <TableCell>Uncertainty</TableCell>
             <TableCell>Ground Truth</TableCell>
@@ -36,7 +36,7 @@ export const PredictionTable: React.FC<PredictionTableProps> = ({ predictions })
               <TableCell>
                 {new Date(prediction.timestamp).toLocaleString()}
               </TableCell>
-              <TableCell>{prediction.patientId}</TableCell>
+              <TableCell>{prediction.requestId}</TableCell>
               <TableCell>
                 <Typography variant="body2">
                   {(prediction.prediction * 100).toFixed(1)}%
