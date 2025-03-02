@@ -5,6 +5,7 @@ import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { MainLayout } from './layouts/MainLayout';
 import { Dashboard } from './pages/Dashboard';
 import { Login } from './pages/Login';
+import LandingPage from './pages/LandingPage';
 
 const theme = createTheme({
   palette: {
@@ -44,9 +45,17 @@ function App() {
         <AuthProvider>
           <Router>
             <Routes>
+              {/* Public routes */}
+              <Route path="/" element={<LandingPage />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/about" element={<div>About Page</div>} />
+              <Route path="/services" element={<div>Services Page</div>} />
+              <Route path="/request-demo" element={<div>Request Demo Page</div>} />
+              <Route path="/learn-more" element={<div>Learn More Page</div>} />
+              
+              {/* Protected routes */}
               <Route
-                path="/"
+                path="/dashboard"
                 element={
                   <ProtectedRoute>
                     <MainLayout>
@@ -55,7 +64,9 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-              {/* Add more routes as needed */}
+              
+              {/* Redirect any other routes to landing page */}
+              <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </Router>
         </AuthProvider>

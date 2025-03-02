@@ -103,7 +103,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-            ML-OOPS Healthcare
+            
           </Typography>
           <IconButton
             onClick={handleMenuOpen}
