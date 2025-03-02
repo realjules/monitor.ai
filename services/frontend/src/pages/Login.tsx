@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Button,
@@ -12,9 +12,9 @@ import {
   Checkbox,
   FormControlLabel,
   Divider,
-  Grid,
   useTheme,
-  useMediaQuery
+  useMediaQuery,
+  Stack
 } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
@@ -37,6 +37,11 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   boxShadow: '0 10px 30px rgba(0, 0, 0, 0.1)',
   position: 'relative',
   zIndex: 2,
+  [theme.breakpoints.down('sm')]: {
+    padding: theme.spacing(3),
+    borderRadius: '15px',
+    maxWidth: '100%',
+  },
 }));
 
 const GradientOverlay = styled(Box)({
@@ -91,6 +96,10 @@ const UserAvatar = styled('div')(({ theme }) => ({
   justifyContent: 'center',
   alignItems: 'center',
   margin: '0 auto 20px',
+  [theme.breakpoints.down('sm')]: {
+    width: '50px',
+    height: '50px',
+  },
 }));
 
 const UserIcon = () => (
@@ -188,7 +197,7 @@ export const Login: React.FC = () => {
   const { login } = useAuth();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const isTablet = useMediaQuery(theme.breakpoints.between('sm', 'md'));
+  const isSmall = useMediaQuery(theme.breakpoints.down('sm'));
   
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -224,45 +233,48 @@ export const Login: React.FC = () => {
   return (
     <Box
       sx={{
-        height: '100vh',
+        minHeight: '100vh',
         display: 'flex',
         width: '100%',
         position: 'relative',
-        overflow: 'hidden'
+        overflow: 'hidden',
+        flexDirection: { xs: 'column', md: 'row' }
       }}
     >
       {/* Left side with orange background and login card */}
       <Box
         sx={{
-          width: isMobile ? '100%' : '40%',
-          minWidth: isMobile ? '100%' : '380px',
-          maxWidth: isMobile ? '100%' : '500px',
+          width: { xs: '100%', md: '40%' },
+          minWidth: { xs: '100%', md: '380px' },
+          maxWidth: { xs: '100%', md: '500px' },
           background: 'linear-gradient(135deg, #FFA726 0%, #FF7043 100%)',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
           position: 'relative',
-          padding: { xs: 2, sm: 3 },
+          padding: { xs: 2, sm: 3, md: 4 },
+          minHeight: { xs: 'auto', md: '100vh' },
+          py: { xs: 4, md: 0 }
         }}
       >
         <StyledPaper elevation={3}>
-          <Box sx={{ position: 'absolute', top: 16, left: 16 }}>
+          <Box sx={{ position: 'absolute', top: { xs: 8, sm: 16 }, left: { xs: 8, sm: 16 } }}>
             <IconButton 
               onClick={() => navigate('/')}
-              size="small"
+              size={isSmall ? "small" : "medium"}
               sx={{ color: '#666' }}
             >
-              <ArrowBack fontSize="small" />
+              <ArrowBack fontSize={isSmall ? "small" : "medium"} />
             </IconButton>
           </Box>
           
           <DotPattern />
           
-          <Box sx={{ textAlign: 'center', mb: 4 }}>
+          <Box sx={{ textAlign: 'center', mb: { xs: 2, sm: 4 } }}>
             <UserAvatar>
               <UserIcon />
             </UserAvatar>
-            <Typography variant="h6" sx={{ fontWeight: 500, color: '#333' }}>
+            <Typography variant="h6" sx={{ fontWeight: 500, color: '#333', fontSize: { xs: '1rem', sm: '1.25rem' } }}>
               Welcome Back!
             </Typography>
           </Box>
@@ -273,6 +285,7 @@ export const Login: React.FC = () => {
               sx={{ 
                 mb: 2, 
                 borderRadius: '8px',
+                fontSize: { xs: '0.75rem', sm: '0.875rem' }
               }}
             >
               {error}
@@ -286,11 +299,11 @@ export const Login: React.FC = () => {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               placeholder="Username"
-              size="small"
+              size={isSmall ? "small" : "medium"}
               margin="normal"
               InputProps={{
                 style: { 
-                  fontSize: '14px',
+                  fontSize: isSmall ? '13px' : '14px',
                 }
               }}
             />
@@ -302,11 +315,11 @@ export const Login: React.FC = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Password"
-              size="small"
+              size={isSmall ? "small" : "medium"}
               margin="normal"
               InputProps={{
                 style: { 
-                  fontSize: '14px',
+                  fontSize: isSmall ? '13px' : '14px',
                 },
                 endAdornment: (
                   <InputAdornment position="end">
@@ -314,23 +327,33 @@ export const Login: React.FC = () => {
                       aria-label="toggle password visibility"
                       onClick={handleClickShowPassword}
                       edge="end"
-                      size="small"
+                      size={isSmall ? "small" : "medium"}
                     >
-                      {showPassword ? <VisibilityOff fontSize="small" /> : <Visibility fontSize="small" />}
+                      {showPassword ? <VisibilityOff fontSize={isSmall ? "small" : "medium"} /> : <Visibility fontSize={isSmall ? "small" : "medium"} />}
                     </IconButton>
                   </InputAdornment>
                 ),
               }}
             />
             
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+            <Box 
+              sx={{ 
+                display: 'flex', 
+                justifyContent: 'space-between', 
+                alignItems: 'center', 
+                mb: 2,
+                flexDirection: { xs: isSmall ? 'column' : 'row', sm: 'row' },
+                gap: { xs: isSmall ? 1 : 0, sm: 0 },
+                mt: 1
+              }}
+            >
               <FormControlLabel
                 control={
                   <Checkbox
                     checked={rememberMe}
                     onChange={(e) => setRememberMe(e.target.checked)}
                     name="rememberMe"
-                    size="small"
+                    size={isSmall ? "small" : "medium"}
                     sx={{ 
                       color: '#ff9800',
                       '&.Mui-checked': {
@@ -339,9 +362,17 @@ export const Login: React.FC = () => {
                     }}
                   />
                 }
-                label={<Typography variant="body2">Remember me</Typography>}
+                label={<Typography variant="body2" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>Remember me</Typography>}
               />
-              <Link to="/forgot-password" style={{ color: '#ff9800', textDecoration: 'none', fontSize: '14px' }}>
+              <Link 
+                to="/forgot-password" 
+                style={{ 
+                  color: '#ff9800', 
+                  textDecoration: 'none', 
+                  fontSize: isSmall ? '12px' : '14px',
+                  marginLeft: isSmall ? '0' : 'auto'
+                }}
+              >
                 Forgot password?
               </Link>
             </Box>
@@ -352,33 +383,77 @@ export const Login: React.FC = () => {
               variant="contained"
               disabled={isLoading}
               sx={{ 
-                mt: 1,
-                mb: 3,
+                mt: { xs: 0, sm: 1 },
+                mb: { xs: 2, sm: 3 },
+                fontSize: { xs: '0.875rem', sm: '1rem' },
+                py: { xs: 1, sm: 1.25 }
               }}
             >
               Sign In
             </StyledButton>
             
-            <Divider sx={{ my: 2 }}>
-              <Typography variant="body2" color="textSecondary" sx={{ px: 1 }}>
+            <Divider sx={{ my: { xs: 1.5, sm: 2 } }}>
+              <Typography 
+                variant="body2" 
+                color="textSecondary" 
+                sx={{ 
+                  px: 1,
+                  fontSize: { xs: '0.75rem', sm: '0.875rem' }
+                }}
+              >
                 Or continue with
               </Typography>
             </Divider>
             
-            <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, my: 2 }}>
-              <IconButton sx={{ color: '#DB4437', border: '1px solid #eee', borderRadius: '50%' }}>
-                <GoogleIcon />
+            <Stack 
+              direction="row" 
+              spacing={2} 
+              justifyContent="center" 
+              sx={{ 
+                my: { xs: 1.5, sm: 2 }
+              }}
+            >
+              <IconButton 
+                sx={{ 
+                  color: '#DB4437', 
+                  border: '1px solid #eee', 
+                  borderRadius: '50%',
+                  width: { xs: 32, sm: 40 },
+                  height: { xs: 32, sm: 40 }
+                }}
+              >
+                <GoogleIcon fontSize={isSmall ? "small" : "medium"} />
               </IconButton>
-              <IconButton sx={{ color: '#333', border: '1px solid #eee', borderRadius: '50%' }}>
-                <GitHubIcon />
+              <IconButton 
+                sx={{ 
+                  color: '#333', 
+                  border: '1px solid #eee', 
+                  borderRadius: '50%',
+                  width: { xs: 32, sm: 40 },
+                  height: { xs: 32, sm: 40 }
+                }}
+              >
+                <GitHubIcon fontSize={isSmall ? "small" : "medium"} />
               </IconButton>
-              <IconButton sx={{ color: '#0A66C2', border: '1px solid #eee', borderRadius: '50%' }}>
-                <LinkedInIcon />
+              <IconButton 
+                sx={{ 
+                  color: '#0A66C2', 
+                  border: '1px solid #eee', 
+                  borderRadius: '50%',
+                  width: { xs: 32, sm: 40 },
+                  height: { xs: 32, sm: 40 }
+                }}
+              >
+                <LinkedInIcon fontSize={isSmall ? "small" : "medium"} />
               </IconButton>
-            </Box>
+            </Stack>
             
-            <Box sx={{ textAlign: 'center', mt: 3 }}>
-              <Typography variant="body2" color="textSecondary">
+            <Box sx={{ textAlign: 'center', mt: { xs: 2, sm: 3 } }}>
+              <Typography 
+                variant="body2" 
+                color="textSecondary"
+                sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}
+              >
                 Don't have an account?{' '}
                 <Link to="/register" style={{ color: '#ff9800', textDecoration: 'none', fontWeight: 'bold' }}>
                   Sign up now!
@@ -390,62 +465,94 @@ export const Login: React.FC = () => {
       </Box>
 
       {/* Right side with white background and graphics */}
-      {!isMobile && (
-        <Box
-          sx={{
-            flex: 1,
-            background: 'white',
-            position: 'relative',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            overflow: 'hidden'
-          }}
-        >
-          {/* Background gradient overlay */}
-          <GradientOverlay />
-          
-          {/* Animated decorative elements */}
-          <FloatingLine width="80px" top="15%" left="10%" color="#FFA726" rotate={0} delay={0.5} />
-          <FloatingLine width="120px" top="10%" left="30%" color="#666" rotate={0} delay={1.2} />
-          
-          <FloatingCircle size="120px" top="25%" left="25%" color="rgba(255, 229, 210, 0.6)" delay={0.3} />
-          <FloatingCircle size="140px" top="75%" right="15%" color="rgba(255, 152, 0, 0.3)" delay={1.5} />
-          <FloatingCircle size="80px" top="45%" left="65%" color="rgba(255, 87, 34, 0.2)" delay={0.7} />
-          
-          <FloatingSquare size="40px" top="25%" right="30%" color="#FF9800" delay={1} />
-          <FloatingSquare size="20px" top="50%" left="20%" color="#000" delay={2} />
-          
-          <FloatingLine width="150px" top="85%" left="40%" color="#FFA726" rotate={0} delay={0.8} />
-          <FloatingCircle size="40px" top="80%" left="30%" color="#FF5722" delay={1.3} />
-          
-          {/* Central content */}
-          <Box sx={{ 
-            maxWidth: '460px', 
-            textAlign: 'center',
-            zIndex: 1,
-            padding: 4,
+      <Box
+        sx={{
+          flex: 1,
+          background: 'white',
+          position: 'relative',
+          display: { xs: 'none', md: 'flex' },
+          justifyContent: 'center',
+          alignItems: 'center',
+          overflow: 'hidden'
+        }}
+      >
+        {/* Background gradient overlay */}
+        <GradientOverlay />
+        
+        {/* Animated decorative elements */}
+        <FloatingLine width="80px" top="15%" left="10%" color="#FFA726" rotate={0} delay={0.5} />
+        <FloatingLine width="120px" top="10%" left="30%" color="#666" rotate={0} delay={1.2} />
+        
+        <FloatingCircle size="120px" top="25%" left="25%" color="rgba(255, 229, 210, 0.6)" delay={0.3} />
+        <FloatingCircle size="140px" top="75%" right="15%" color="rgba(255, 152, 0, 0.3)" delay={1.5} />
+        <FloatingCircle size="80px" top="45%" left="65%" color="rgba(255, 87, 34, 0.2)" delay={0.7} />
+        
+        <FloatingSquare size="40px" top="25%" right="30%" color="#FF9800" delay={1} />
+        <FloatingSquare size="20px" top="50%" left="20%" color="#000" delay={2} />
+        
+        <FloatingLine width="150px" top="85%" left="40%" color="#FFA726" rotate={0} delay={0.8} />
+        <FloatingCircle size="40px" top="80%" left="30%" color="#FF5722" delay={1.3} />
+        
+        {/* Central content */}
+        <Box sx={{ 
+          maxWidth: '460px', 
+          textAlign: 'center',
+          zIndex: 1,
+          padding: 4,
+          position: 'relative'
+        }}>
+          <Typography variant="h3" sx={{ 
+            fontWeight: 700, 
+            mb: 2,
+            color: '#333',
             position: 'relative'
           }}>
-            <Typography variant="h3" sx={{ 
-              fontWeight: 700, 
-              mb: 2,
-              color: '#333',
-              position: 'relative'
-            }}>
-              Monitor AI Healthcare
-            </Typography>
-            <Typography variant="body1" sx={{ 
-              color: '#666',
-              mb: 2,
-              lineHeight: 1.7,
-              position: 'relative'
-            }}>
-              Securely access your AI monitoring dashboard to ensure patient safety and regulatory compliance for healthcare applications.
-            </Typography>
-          </Box>
+            {/* Monitor AI Healthcare */}
+          </Typography>
+          <Typography variant="body1" sx={{ 
+            color: '#666',
+            mb: 2,
+            lineHeight: 1.7,
+            position: 'relative'
+          }}>
+            {/* Securely access your AI monitoring dashboard to ensure patient safety and regulatory compliance for healthcare applications. */}
+          </Typography>
         </Box>
-      )}
+      </Box>
+
+      {/* Add a simplified version of the right panel for mobile view */}
+      <Box
+        sx={{
+          display: { xs: 'flex', md: 'none' },
+          justifyContent: 'center',
+          alignItems: 'center',
+          background: 'linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(255,152,0,0.1) 100%)',
+          p: 3,
+          minHeight: '120px',
+          textAlign: 'center'
+        }}
+      >
+        <Typography
+          variant="h6"
+          sx={{
+            fontWeight: 600,
+            color: '#333',
+            position: 'relative',
+            mb: 1
+          }}
+        >
+          Monitor AI Healthcare
+        </Typography>
+        <Typography
+          variant="body2"
+          sx={{
+            color: '#666',
+            fontSize: { xs: '0.75rem', sm: '0.875rem' }
+          }}
+        >
+          Securely access your AI monitoring dashboard 
+        </Typography>
+      </Box>
     </Box>
   );
 };
