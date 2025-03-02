@@ -507,7 +507,7 @@ export const Login: React.FC = () => {
             color: '#333',
             position: 'relative'
           }}>
-            {/* Monitor AI Healthcare */}
+            Monitor AI Healthcare
           </Typography>
           <Typography variant="body1" sx={{ 
             color: '#666',
@@ -515,7 +515,7 @@ export const Login: React.FC = () => {
             lineHeight: 1.7,
             position: 'relative'
           }}>
-            {/* Securely access your AI monitoring dashboard to ensure patient safety and regulatory compliance for healthcare applications. */}
+            Securely access your AI monitoring dashboard to ensure patient safety and regulatory compliance for healthcare applications.
           </Typography>
         </Box>
       </Box>
