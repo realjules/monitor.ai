@@ -1,13 +1,13 @@
 # Core dependencies
-fastapi==0.115.6
-uvicorn==0.34.0
-prometheus-fastapi-instrumentator==7.0.2
-pydantic==2.10.4
+fastapi
+uvicorn
+prometheus-fastapi-instrumentator
+pydantic
 
 # Database
-sqlalchemy==2.0.0
-alembic==1.13.0
-psycopg2-binary==2.9.9
+sqlalchemy
+alembic
+psycopg2-binary
 
 # ML/AI - Comment out what you don't need for development
 # numpy==1.24.0
@@ -18,9 +18,9 @@ psycopg2-binary==2.9.9
 # pillow==10.0.0
 
 # Utils
-python-multipart==0.0.9
-python-jose[cryptography]==3.3.0
-passlib[bcrypt]==1.7.4
-requests==2.31.0
-aiohttp==3.9.0
-python-dotenv==1.0.0
+python-multipart
+python-jose[cryptography]
+passlib[bcrypt]
+requests
+aiohttp
+python-dotenv
